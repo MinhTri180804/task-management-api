@@ -8,7 +8,7 @@ import databaseConfig from '@config/database.config';
 import appConfig from '@config/app.config';
 import { validateEnv } from '@config/env-validation.config';
 import { MongoDatabaseSetupFactory } from '@setup/database/mongo.database.factory';
-import { TodoModule } from '@modules/todo/todo.module';
+import { UserModule } from '@modules/user/user.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { TodoModule } from '@modules/todo/todo.module';
       imports: [ConfigModule],
       useClass: MongoDatabaseSetupFactory,
     }),
-    TodoModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  todo_management_api_dev:
+    container_name: todo_management_api_dev
+    build:
+      context: .
+      target: development
+    command: npm run start:dev
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    depends_on:
+      - todo_management_mongodb
+    volumes:
+      - ./:/usr/src/app
+    restart: unless-stopped
+
+  todo_management_mongodb:
+    container_name: ${MONGODB_HOST}
+    image: mongo:latest
+    ports:
+      - ${MONGODB_PORT}:${MONGODB_PORT}
+    volumes:
+      - ./mongo-data:/data/db
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge

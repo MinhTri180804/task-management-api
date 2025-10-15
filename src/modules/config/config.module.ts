@@ -1,7 +1,7 @@
 import appConfig from '@config/app.config';
 import databaseConfig from '@config/database.config';
 import { validateEnv } from '@config/env-validation.config';
-import { getEnvFilePath } from 'src/utils/getEnvFilePath.config';
+import { getEnvFilePath } from 'src/utils/getEnvFilePath.util';
 import { ConfigModule as ConfigModuleNestJS } from '@nestjs/config';
 import redisConfig from '@config/redis.config';
 

@@ -11,6 +11,7 @@ services:
       - ${APP_PORT}:${APP_PORT}
     depends_on:
       - todo_management_mongodb
+      - todo_management_redis
     volumes:
       - ./:/usr/src/app
     restart: unless-stopped
@@ -22,6 +23,15 @@ services:
       - ${MONGODB_PORT}:${MONGODB_PORT}
     volumes:
       - ./mongo-data:/data/db
+    restart: unless-stopped
+
+  todo_management_redis:
+    container_name: ${REDIS_HOST}
+    image: redis:latest
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    volumes:
+      - ./redis_data:/data
     restart: unless-stopped
 
 networks:

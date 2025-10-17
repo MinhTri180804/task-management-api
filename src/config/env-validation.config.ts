@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import { plainToInstance } from 'class-transformer';
 import {
   IsEnum,
@@ -32,6 +26,23 @@ export class EnvironmentVariables {
 
   @IsString()
   DB_HOST: string;
+
+  // Redis
+  @IsString()
+  @IsNotEmpty()
+  REDIS_HOST: string;
+
+  @IsNumber()
+  REDIS_PORT: number;
+
+  // Resend
+  @IsString()
+  @IsNotEmpty()
+  RESEND_API_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  RESEND_EMAIL_FROM: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

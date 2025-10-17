@@ -1,7 +1,7 @@
 import {
   SEND_MAIL_QUEUE_JOB,
   SEND_MAIL_QUEUE_NAME,
-} from '@modules/messageQueue/message-queue.constant';
+} from '@core/messageQueue/message-queue.constant';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';

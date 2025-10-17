@@ -1,8 +1,8 @@
-import { CacheModule } from '@modules/cache/cache.module';
-import { ConfigModule } from '@modules/config/config.module';
-import { MailModule } from '@modules/mail/mail.module';
-import { MessageQueueModule } from '@modules/messageQueue/message-queue.module';
-import { DatabaseModule } from '@modules/mongoose/mongoose.module';
+import { CacheModule } from '@core/cache/cache.module';
+import { ConfigModule } from '@core/config/config.module';
+import { MailModule } from '@core/mail/mail.module';
+import { MessageQueueModule } from '@core/messageQueue/message-queue.module';
+import { DatabaseModule } from '@core/mongoose/mongoose.module';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';

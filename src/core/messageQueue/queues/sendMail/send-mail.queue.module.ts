@@ -1,11 +1,11 @@
 import {
   MESSAGE_QUEUE_PREFIX,
   SEND_MAIL_QUEUE_NAME,
-} from '@modules/messageQueue/message-queue.constant';
+} from '@core/messageQueue/message-queue.constant';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { SendMailQueueService } from './send-mail.queue.service';
-import { MailModule } from '@modules/mail/mail.module';
+import { MailModule } from '@core/mail/mail.module';
 import { SendMailConsumer } from './send-email.processor';
 
 @Module({

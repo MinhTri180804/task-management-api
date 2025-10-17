@@ -1,11 +1,11 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { DatabaseModule } from './mongoose.module';
+import { MongoModule } from './mongoose.module';
 
 @Injectable()
 export class MongoLoggerService implements OnModuleInit {
-  private readonly _logger = new Logger(DatabaseModule.name);
+  private readonly _logger = new Logger(MongoModule.name);
 
   constructor(@InjectConnection() private readonly _connection: Connection) {}
   onModuleInit() {

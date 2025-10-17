@@ -1,22 +1,11 @@
-import { CacheModule } from '@core/cache/cache.module';
-import { ConfigModule } from '@core/config/config.module';
-import { MailModule } from '@core/mail/mail.module';
-import { MessageQueueModule } from '@core/messageQueue/message-queue.module';
-import { DatabaseModule } from '@core/mongoose/mongoose.module';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CoreModule } from './core/core.module';
 
 @Module({
-  imports: [
-    ConfigModule,
-    DatabaseModule,
-    UserModule,
-    CacheModule,
-    MailModule,
-    MessageQueueModule,
-  ],
+  imports: [CoreModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })

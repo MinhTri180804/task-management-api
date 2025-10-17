@@ -4,14 +4,20 @@ import { validateEnv } from '@config/env-validation.config';
 import { getEnvFilePath } from 'src/utils/getEnvFilePath.util';
 import { ConfigModule as ConfigModuleNestJS } from '@nestjs/config';
 import redisConfig from '@config/redis.config';
+import { Module } from '@nestjs/common';
+import resendConfig from '@config/resend.config';
 
-export const ConfigModule = ConfigModuleNestJS.forRoot({
-  isGlobal: true,
-  envFilePath: getEnvFilePath(),
-  cache: true,
-  load: [databaseConfig, appConfig, redisConfig],
-  validate: validateEnv,
-});
-
-// @Module
-// export class ConfigModule {}
+@Module({
+  imports: [
+    ConfigModuleNestJS.forRoot({
+      isGlobal: true,
+      envFilePath: getEnvFilePath(),
+      cache: true,
+      load: [databaseConfig, appConfig, redisConfig, resendConfig],
+      validate: validateEnv,
+    }),
+  ],
+  providers: [],
+  exports: [],
+})
+export class ConfigModule {}

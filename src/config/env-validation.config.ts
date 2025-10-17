@@ -34,6 +34,15 @@ export class EnvironmentVariables {
 
   @IsNumber()
   REDIS_PORT: number;
+
+  // Resend
+  @IsString()
+  @IsNotEmpty()
+  RESEND_API_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  RESEND_EMAIL_FROM: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

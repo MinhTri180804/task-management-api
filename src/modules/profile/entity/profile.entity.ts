@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseEntity } from '@shared/entities/base/base.entity';
 import { HydratedDocument } from 'mongoose';
 
@@ -23,3 +23,9 @@ export class Profile extends BaseEntity {
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);
+
+export const ProfileModel: ModelDefinition = {
+  name: Profile.name,
+  schema: ProfileSchema,
+  collection: COLLECTION_NAME,
+};

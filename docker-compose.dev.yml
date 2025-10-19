@@ -28,8 +28,6 @@ services:
   todo_management_redis:
     container_name: ${REDIS_HOST}
     image: redis:latest
-    expose:
-      - 6379
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     volumes:

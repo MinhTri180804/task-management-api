@@ -17,9 +17,3 @@ import { CacheService } from './cache.service';
   exports: [CacheService, CacheModuleNestJs],
 })
 export class CacheModule {}
-
-// export const CacheModule = CacheModuleNestJs.registerAsync({
-//   inject: [ConfigService],
-//   useClass: CacheModuleFactory,
-//   isGlobal: true,
-// });

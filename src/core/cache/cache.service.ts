@@ -42,8 +42,6 @@ export class CacheService {
 
     const PAYLOAD: VerifyEmailRegisterPayload = { otp, createdAt };
 
-    console.log(this._cacheManager.stores);
-
     await this._cacheManager.set<VerifyEmailRegisterPayload>(
       KEY,
       PAYLOAD,

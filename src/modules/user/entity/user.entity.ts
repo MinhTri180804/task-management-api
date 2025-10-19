@@ -1,5 +1,5 @@
 import { AuthMethodEnum } from '@enum/auth-method.enum';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseEntity } from '@shared/entities/base/base.entity';
 import { HydratedDocument } from 'mongoose';
 
@@ -50,3 +50,9 @@ export class User extends BaseEntity {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+export const UserModel: ModelDefinition = {
+  name: User.name,
+  schema: UserSchema,
+  collection: COLLECTION_NAME,
+};

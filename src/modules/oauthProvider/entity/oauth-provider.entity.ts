@@ -1,5 +1,5 @@
 import { User } from '@modules/user/entity/user.entity';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
 const COLLECTION_NAME = 'oauth_providers';
@@ -29,3 +29,9 @@ export class OAuthProvider {
 }
 
 export const OAuthProviderSchema = SchemaFactory.createForClass(OAuthProvider);
+
+export const OAuthProviderModel: ModelDefinition = {
+  name: OAuthProvider.name,
+  schema: OAuthProviderSchema,
+  collection: COLLECTION_NAME,
+};

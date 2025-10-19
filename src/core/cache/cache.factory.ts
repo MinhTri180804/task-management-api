@@ -41,7 +41,6 @@ export class CacheModuleFactory implements CacheOptionsFactory {
     await this._pingTestConnection(redisStore);
     return {
       stores: [redisStore],
-      ttl: 10 * 1000,
     };
   }
 }

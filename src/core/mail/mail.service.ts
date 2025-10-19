@@ -1,7 +1,14 @@
 import { ResendConfig, ResendConfigName } from '@config/resend.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
+import { CreateEmailResponseSuccess, ErrorResponse, Resend } from 'resend';
+import verifyEmailRegisterTemplate from './templates/verify-email-register.template';
+
+type SendVerifyEmailRegisterParams = {
+  email: string;
+  otp: string;
+  expiredAt: Date;
+};
 
 @Injectable()
 export class MailService {
@@ -17,6 +24,17 @@ export class MailService {
     this._emailForm = emailFrom;
   }
 
+  private _trackingLog(
+    data: CreateEmailResponseSuccess | null,
+    error: ErrorResponse | null,
+  ) {
+    if (error) {
+      this._logger.error(`Send mail failed: ${error.message}`);
+    } else {
+      this._logger.log(`Mail sent successfully: ${data?.id}`);
+    }
+  }
+
   async sendWelcomeEmail(emailTo: string) {
     const { data, error } = await this._resend.emails.send({
       from: this._emailForm,
@@ -25,10 +43,21 @@ export class MailService {
       html: '<p>Congrats on sending',
     });
 
-    if (error) {
-      this._logger.error(`Send mail failed: ${error.message}`);
-    } else {
-      this._logger.log(`Mail sent successfully: ${data?.id}`);
-    }
+    this._trackingLog(data, error);
+  }
+
+  async sendVerifyEmailRegister({
+    email,
+    expiredAt,
+    otp,
+  }: SendVerifyEmailRegisterParams) {
+    const { data, error } = await this._resend.emails.send({
+      from: this._emailForm,
+      to: email,
+      subject: 'Verify email register',
+      html: verifyEmailRegisterTemplate({ otp, expiredAt }),
+    });
+
+    this._trackingLog(data, error);
   }
 }

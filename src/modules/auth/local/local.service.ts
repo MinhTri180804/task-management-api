@@ -9,6 +9,7 @@ import {
 import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register';
 import { generateSecurePin } from '@util/generateSecurePin.util';
 import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
+import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
 
 @Injectable()
 export class AuthLocalService {

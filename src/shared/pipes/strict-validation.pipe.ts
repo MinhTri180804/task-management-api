@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ValidationPipe,
 } from '@nestjs/common';
+import { cleanObject } from '@util/clean-object.util';
 
 export class StrictValidationPipe extends ValidationPipe {
   constructor() {
@@ -10,6 +11,14 @@ export class StrictValidationPipe extends ValidationPipe {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
+      exceptionFactory: (error) => {
+        const detailsError = error.map((errorValue) => ({
+          field: errorValue.property,
+          message: Object.values(errorValue.constraints || {}),
+        }));
+
+        return new BadRequestException({ details: detailsError }, '123');
+      },
     });
   }
 
@@ -21,16 +30,11 @@ export class StrictValidationPipe extends ValidationPipe {
       typeof transformed !== 'object' ||
       Array.isArray(transformed)
     )
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return transformed;
+      return transformed as unknown[];
 
-    for (const key of Object.keys(transformed)) {
-      if (transformed[key] === undefined) {
-        delete transformed[key];
-      }
-    }
+    const transformClean = cleanObject({ object: transformed });
 
-    if (Object.keys(transformed).length === 0) {
+    if (Object.keys(transformClean).length === 0) {
       throw new BadRequestException('Request body cannot be empty');
     }
 

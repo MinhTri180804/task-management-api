@@ -1,6 +1,6 @@
 import { IsEmail } from 'class-validator';
 
-export class EmailRegisterDTO {
+export class SendOTPVerifyEmailRegisterDTO {
   @IsEmail()
   email: string;
 }

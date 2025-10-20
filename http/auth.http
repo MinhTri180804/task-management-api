@@ -1,0 +1,11 @@
+@base_url = http://localhost:3000/auth
+
+### Send otp verify email register
+POST {{base_url}}/local/register/verify-email/send-otp HTTP/1.1
+content-type: application/json
+
+{
+    "email": "nguyenminhtri1808t@gmail.com"
+}
+
+### Resend otp verify email register

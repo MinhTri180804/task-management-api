@@ -1,9 +1,14 @@
 import { CacheService } from '@core/cache/cache.service';
 import { SendMailQueueService } from '@core/messageQueue/queues/sendMail/send-mail.queue.service';
 import { UserService } from '@modules/user/user.service';
-import { ConflictException, Injectable } from '@nestjs/common';
-import { EmailRegisterDTO } from '../dto/email-register.dto';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
+import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register';
 import { generateSecurePin } from '@util/generateSecurePin.util';
+import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
 
 @Injectable()
 export class AuthLocalService {
@@ -12,11 +17,21 @@ export class AuthLocalService {
     private readonly _cacheService: CacheService,
     private readonly _sendMailQueueService: SendMailQueueService,
   ) {}
-  async sendOTPVerifyRegister({ email }: EmailRegisterDTO) {
+
+  async sendOTPVerifyRegister({ email }: SendOTPVerifyEmailRegisterDTO) {
     const userByEmail = await this._userService.findByEmail({ email });
 
     if (userByEmail) {
-      throw new ConflictException('Email already exists in the system');
+      // TODO: optimization params exception
+      throw new BadRequestException({
+        message: 'Email already exists in the system',
+        details: [
+          {
+            field: 'email',
+            message: ['Email is exist'],
+          },
+        ],
+      });
     }
 
     const verifyExist = await this._cacheService.getVerifyEmailRegister({

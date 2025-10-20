@@ -9,6 +9,7 @@ export type ApiResponseError = {
   isSuccess: boolean;
   statusCode: number;
   message: string;
-  details: object | string | null;
+  details: object | string | null | Array<object>;
   cause?: any;
+  stacks?: any;
 };

@@ -1,24 +1,16 @@
 import { NodeEnvEnum } from '@enum/node-env.enum';
 import {
   ArgumentsHost,
-  BadRequestException,
   ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { BaseErrorParamExceptionObject } from '@type/common.type';
 import { ApiResponseError } from '@type/response.type';
-import { cleanObject } from '@util/clean-object.util';
 import { Response } from 'express';
 import { STATUS_CODES } from 'http';
 
 export class AllExceptionFilter implements ExceptionFilter {
-  private readonly _exceptionHandlers = new Map<
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    Function,
-    (ex: HttpException) => BaseErrorParamExceptionObject
-  >([[BadRequestException, (ex) => this._badRequestExceptionHandler(ex)]]);
-
   constructor() {}
 
   catch(exception: any, host: ArgumentsHost) {
@@ -33,16 +25,11 @@ export class AllExceptionFilter implements ExceptionFilter {
 
       if (typeof exceptionResponse === 'string') {
         responseBody.message = exceptionResponse;
-      }
-
-      for (const [
-        ExceptionType,
-        handler,
-      ] of this._exceptionHandlers.entries()) {
-        if (exception instanceof ExceptionType) {
-          const exceptionContentBody = handler(exception);
-          responseBody = { ...responseBody, ...exceptionContentBody };
-        }
+      } else if (
+        (exceptionResponse as BaseErrorParamExceptionObject)?.details
+      ) {
+        responseBody.details =
+          (exceptionResponse as BaseErrorParamExceptionObject).details ?? null;
       }
 
       if (process.env.NODE_ENV !== NodeEnvEnum.DEVELOPMENT)
@@ -80,29 +67,5 @@ export class AllExceptionFilter implements ExceptionFilter {
       cause: exception.cause,
       stacks: exception.stack,
     };
-  }
-
-  // ====== Method Handler Exception ======
-  private _badRequestExceptionHandler(
-    exception: HttpException,
-  ): BaseErrorParamExceptionObject {
-    const result: BaseErrorParamExceptionObject = {
-      details: undefined,
-      message: undefined,
-    };
-    const badRequestResponse: BaseErrorParamExceptionObject =
-      exception.getResponse() as object;
-
-    if (typeof badRequestResponse !== 'string') {
-      if (badRequestResponse.details) {
-        result.details = badRequestResponse.details;
-      }
-
-      if (badRequestResponse.message) {
-        result.message = badRequestResponse.message;
-      }
-    }
-
-    return cleanObject({ object: result });
   }
 }

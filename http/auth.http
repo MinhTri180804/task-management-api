@@ -9,3 +9,9 @@ content-type: application/json
 }
 
 ### Resend otp verify email register
+POST {{base_url}}/local/register/verify-email/resend-otp HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "nguyenminhtri1808t@gmail.com"
+}

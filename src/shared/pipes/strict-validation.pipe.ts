@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ValidationPipe,
 } from '@nestjs/common';
+import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
 import { cleanObject } from '@util/clean-object.util';
 
 export class StrictValidationPipe extends ValidationPipe {
@@ -17,7 +18,7 @@ export class StrictValidationPipe extends ValidationPipe {
           message: Object.values(errorValue.constraints || {}),
         }));
 
-        return new BadRequestException({ details: detailsError }, '123');
+        return new ValidationRequestException({ details: detailsError });
       },
     });
   }

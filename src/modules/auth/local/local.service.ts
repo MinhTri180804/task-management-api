@@ -134,12 +134,8 @@ export class AuthLocalService {
       token_init_profile: initProfileToken,
     });
 
-    const { exp } = this._jwtInitProfileTokenService.decode(initProfileToken);
-
-    await this._sendMailQueueService.createProfileRegister({
+    await this._sendMailQueueService.verifiedEmailRegisterSuccessfully({
       email: user.email,
-      expiresIn: exp,
-      token: initProfileToken,
     });
 
     return { initProfileToken };

@@ -6,10 +6,9 @@ export type VerifyEmailRegisterParams = {
 
 export type VerifyEmailRegisterData = VerifyEmailRegisterParams;
 
-export type CreateProfileRegisterParams = {
+export type VerifiedEmailRegisterSuccessfullyParams = {
   email: string;
-  expiresIn: number;
-  token: string;
 };
 
-export type CreateProfileRegisterData = CreateProfileRegisterParams;
+export type VerifiedEmailRegisterSuccessfullyData =
+  VerifiedEmailRegisterSuccessfullyParams;

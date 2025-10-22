@@ -6,7 +6,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import {
-  CreateProfileRegisterParams,
+  VerifiedEmailRegisterSuccessfullyParams,
   VerifyEmailRegisterParams,
 } from './send-email.type';
 
@@ -34,15 +34,14 @@ export class SendMailQueueService {
     } as VerifyEmailRegisterParams);
   }
 
-  async createProfileRegister({
+  async verifiedEmailRegisterSuccessfully({
     email,
-    expiresIn,
-    token,
-  }: CreateProfileRegisterParams) {
-    await this._sendMailQueue.add(SEND_MAIL_QUEUE_JOB.CREATE_PROFILE_REGISTER, {
-      email,
-      expiresIn,
-      token,
-    } as CreateProfileRegisterParams);
+  }: VerifiedEmailRegisterSuccessfullyParams) {
+    await this._sendMailQueue.add(
+      SEND_MAIL_QUEUE_JOB.VERIFIED_EMAIL_REGISTER_SUCCESSFULLY,
+      {
+        email,
+      } as VerifiedEmailRegisterSuccessfullyParams,
+    );
   }
 }

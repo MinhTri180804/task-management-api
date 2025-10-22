@@ -6,7 +6,7 @@ import {
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import {
-  CreateProfileRegisterData,
+  VerifiedEmailRegisterSuccessfullyData,
   VerifyEmailRegisterData,
 } from './send-email.type';
 
@@ -18,7 +18,9 @@ export class SendMailConsumer extends WorkerHost {
 
   async process(
     job: Job<
-      { emailTo: string } | VerifyEmailRegisterData | CreateProfileRegisterData
+      | { emailTo: string }
+      | VerifyEmailRegisterData
+      | VerifiedEmailRegisterSuccessfullyData
     >,
   ): Promise<any> {
     switch (job.name) {
@@ -32,14 +34,11 @@ export class SendMailConsumer extends WorkerHost {
         break;
       }
 
-      case SEND_MAIL_QUEUE_JOB.CREATE_PROFILE_REGISTER: {
-        const { email, expiresIn, token } =
-          job.data as CreateProfileRegisterData;
+      case SEND_MAIL_QUEUE_JOB.VERIFIED_EMAIL_REGISTER_SUCCESSFULLY: {
+        const { email } = job.data as VerifiedEmailRegisterSuccessfullyData;
 
-        await this._mailService.sendCreateProfileRegister({
-          expiresIn,
+        await this._mailService.sendVerifiedEmailRegisterSuccessfully({
           email,
-          token,
         });
         break;
       }

@@ -2,12 +2,8 @@ import { ResendConfig, ResendConfigName } from '@config/resend.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateEmailResponseSuccess, ErrorResponse, Resend } from 'resend';
+import sendVerifyEmailRegisterSuccessfullyTemplate from './templates/send-verify-email-register-successfully.template';
 import verifyEmailRegisterTemplate from './templates/verify-email-register.template';
-import createProfileRegisterTemplate from './templates/create-profile-register.temlate';
-import {
-  RedirectToConfig,
-  RedirectToConfigName,
-} from '@config/redirect-to.config';
 
 type SendVerifyEmailRegisterParams = {
   email: string;
@@ -15,10 +11,8 @@ type SendVerifyEmailRegisterParams = {
   expiredAt: Date;
 };
 
-type SendCreateProfileRegisterParams = {
+type SendVerifiedEmailRegisterSuccessfully = {
   email: string;
-  expiresIn: number;
-  token: string;
 };
 
 @Injectable()
@@ -72,22 +66,15 @@ export class MailService {
     this._trackingLog(data, error);
   }
 
-  async sendCreateProfileRegister({
-    expiresIn,
+  async sendVerifiedEmailRegisterSuccessfully({
     email,
-    token,
-  }: SendCreateProfileRegisterParams) {
-    const { createProfile } =
-      this._configService.getOrThrow<RedirectToConfig>(RedirectToConfigName);
+  }: SendVerifiedEmailRegisterSuccessfully) {
     const { data, error } = await this._resend.emails.send({
       from: this._emailForm,
       to: email,
       subject: 'Register email successfully',
-      html: createProfileRegisterTemplate({
+      html: sendVerifyEmailRegisterSuccessfullyTemplate({
         email,
-        token,
-        expiresIn,
-        redirectTo: createProfile,
       }),
     });
 

@@ -43,6 +43,45 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   RESEND_EMAIL_FROM: string;
+
+  // Secret Keys
+  @IsString()
+  @IsNotEmpty()
+  JWT_ACCESS_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_REFRESH_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_INIT_PROFILE_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_RESET_PASSWORD_SECRET: string;
+
+  // Expires In
+  @IsString()
+  @IsNotEmpty()
+  JWT_ACCESS_EXPIRES_IN: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_REFRESH_EXPIRES_IN: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_INIT_PROFILE_EXPIRES_IN: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_RESET_PASSWORD_EXPIRES_IN: string;
+
+  // Redirect to
+  @IsString()
+  @IsNotEmpty()
+  CREATE_PROFILE_REDIRECT_TO: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

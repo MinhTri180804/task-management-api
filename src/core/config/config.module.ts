@@ -6,6 +6,9 @@ import { ConfigModule as ConfigModuleNestJS } from '@nestjs/config';
 import redisConfig from '@config/redis.config';
 import { Module } from '@nestjs/common';
 import resendConfig from '@config/resend.config';
+import expiresInConfig from '@config/expires-in.config';
+import secretKeyConfig from '@config/secret-key.config';
+import redirectToConfig from '@config/redirect-to.config';
 
 @Module({
   imports: [
@@ -13,7 +16,15 @@ import resendConfig from '@config/resend.config';
       isGlobal: true,
       envFilePath: getEnvFilePath(),
       cache: true,
-      load: [databaseConfig, appConfig, redisConfig, resendConfig],
+      load: [
+        databaseConfig,
+        appConfig,
+        redisConfig,
+        resendConfig,
+        expiresInConfig,
+        secretKeyConfig,
+        redirectToConfig,
+      ],
       validate: validateEnv,
     }),
   ],

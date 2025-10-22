@@ -3,6 +3,7 @@ import { AuthLocalService } from './local.service';
 import { ResponseSuccessMessage } from '@shared/decorators/response-success-message.decorator';
 import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
 import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
+import { VerifyOTPEmailRegisterDTO } from '../dto/verify-otp-email-register.dto';
 
 @Controller('auth/local')
 export class AuthLocalController {
@@ -29,5 +30,19 @@ export class AuthLocalController {
     });
 
     return;
+  }
+
+  @Post('register/verify-email')
+  @ResponseSuccessMessage('Verify email otp successfully')
+  async verifyOTPEmailRegister(@Body() data: VerifyOTPEmailRegisterDTO) {
+    const { initProfileToken } =
+      await this._authLocalService.verifyOTPEmailRegister({
+        email: data.email,
+        otp: data.otp,
+      });
+
+    return {
+      token: initProfileToken,
+    };
   }
 }

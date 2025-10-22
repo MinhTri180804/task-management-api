@@ -1,16 +1,25 @@
 import { CacheService } from '@core/cache/cache.service';
+import { JWTInitProfileTokenService } from '@core/jwt/initProfileToken/init-profile.token.service';
 import { SendMailQueueService } from '@core/messageQueue/queues/sendMail/send-mail.queue.service';
+import { AuthMethodEnum } from '@enum/auth-method.enum';
 import { UserService } from '@modules/user/user.service';
 import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { TooManyRequestsException } from '@shared/exceptions/too-many-request.exception';
+import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
 import { generateSecurePin } from '@util/generateSecurePin.util';
+import { remainingMS } from '@util/remaining-ms.util';
 import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
 import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
-import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
+
+type VerifyOTPEmailRegisterParams = {
+  email: string;
+  otp: string;
+};
 
 @Injectable()
 export class AuthLocalService {
@@ -18,6 +27,7 @@ export class AuthLocalService {
     private readonly _userService: UserService,
     private readonly _cacheService: CacheService,
     private readonly _sendMailQueueService: SendMailQueueService,
+    private readonly _jwtInitProfileTokenService: JWTInitProfileTokenService,
   ) {}
 
   async sendOTPVerifyRegister({ email }: SendOTPVerifyEmailRegisterDTO) {
@@ -68,13 +78,11 @@ export class AuthLocalService {
     }
 
     const { createdAt } = cache;
-    const currentTime = Date.now();
-    const elapsedTime = currentTime - createdAt;
-    if (elapsedTime < RESEND_INTERVAL_MS) {
-      const remainingTime = RESEND_INTERVAL_MS - elapsedTime;
+    const remainingTimeMS = remainingMS(createdAt, RESEND_INTERVAL_MS);
+    if (remainingTimeMS > 0) {
       throw new TooManyRequestsException({
         details: {
-          remainingTime,
+          remainingTimeMS,
         },
       });
     }
@@ -93,5 +101,47 @@ export class AuthLocalService {
     });
 
     return;
+  }
+
+  async verifyOTPEmailRegister({ email, otp }: VerifyOTPEmailRegisterParams) {
+    const otpCache = await this._cacheService.getVerifyEmailRegister({ email });
+
+    if (!otpCache) {
+      throw new NotFoundException('OTP not found or expired');
+    }
+
+    const isMatchOTP = otpCache.otp === otp;
+
+    if (!isMatchOTP) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    await this._cacheService.deleteVerifyEmailRegister({ email });
+
+    const user = await this._userService.create({
+      email,
+      is_email_verified: true,
+      local_auth_enabled: true,
+      primary_auth_method: AuthMethodEnum.LOCAL,
+    });
+
+    const initProfileToken = this._jwtInitProfileTokenService.sign({
+      userId: String(user._id),
+      email: user.email,
+    });
+
+    await this._userService.update(String(user._id), {
+      token_init_profile: initProfileToken,
+    });
+
+    const { exp } = this._jwtInitProfileTokenService.decode(initProfileToken);
+
+    await this._sendMailQueueService.createProfileRegister({
+      email: user.email,
+      expiresIn: exp,
+      token: initProfileToken,
+    });
+
+    return { initProfileToken };
   }
 }

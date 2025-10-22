@@ -5,6 +5,6 @@ import { Types } from 'mongoose';
 export class BaseEntity {
   readonly _id?: Types.ObjectId;
 
-  @Prop({ default: null })
-  deleted_at: Date;
+  @Prop({ default: null, required: false })
+  deleted_at?: Date;
 }

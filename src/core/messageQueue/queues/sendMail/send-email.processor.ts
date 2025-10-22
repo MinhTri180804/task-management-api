@@ -5,7 +5,10 @@ import {
 } from '@core/messageQueue/message-queue.constant';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { VerifyEmailRegisterData } from './send-email.type';
+import {
+  CreateProfileRegisterData,
+  VerifyEmailRegisterData,
+} from './send-email.type';
 
 @Processor(SEND_MAIL_QUEUE_NAME)
 export class SendMailConsumer extends WorkerHost {
@@ -14,7 +17,9 @@ export class SendMailConsumer extends WorkerHost {
   }
 
   async process(
-    job: Job<{ emailTo: string } | VerifyEmailRegisterData>,
+    job: Job<
+      { emailTo: string } | VerifyEmailRegisterData | CreateProfileRegisterData
+    >,
   ): Promise<any> {
     switch (job.name) {
       case SEND_MAIL_QUEUE_JOB.VERIFY_EMAIL_REGISTER: {
@@ -23,6 +28,18 @@ export class SendMailConsumer extends WorkerHost {
           email,
           otp,
           expiredAt,
+        });
+        break;
+      }
+
+      case SEND_MAIL_QUEUE_JOB.CREATE_PROFILE_REGISTER: {
+        const { email, expiresIn, token } =
+          job.data as CreateProfileRegisterData;
+
+        await this._mailService.sendCreateProfileRegister({
+          expiresIn,
+          email,
+          token,
         });
         break;
       }

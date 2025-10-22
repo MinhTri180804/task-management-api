@@ -5,7 +5,10 @@ import {
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
-import { VerifyEmailRegisterParams } from './send-email.type';
+import {
+  CreateProfileRegisterParams,
+  VerifyEmailRegisterParams,
+} from './send-email.type';
 
 @Injectable()
 export class SendMailQueueService {
@@ -29,5 +32,17 @@ export class SendMailQueueService {
       expiredAt,
       email,
     } as VerifyEmailRegisterParams);
+  }
+
+  async createProfileRegister({
+    email,
+    expiresIn,
+    token,
+  }: CreateProfileRegisterParams) {
+    await this._sendMailQueue.add(SEND_MAIL_QUEUE_JOB.CREATE_PROFILE_REGISTER, {
+      email,
+      expiresIn,
+      token,
+    } as CreateProfileRegisterParams);
   }
 }

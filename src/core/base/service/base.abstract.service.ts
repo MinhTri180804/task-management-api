@@ -1,5 +1,5 @@
-import { BaseEntity } from '@shared/entities/base/base.entity';
-import { IBaseRepository } from '@shared/repositories/base/base.interface.repository';
+import { BaseEntity } from 'src/core/base/entity/base.entity';
+import { IBaseRepository } from 'src/core/base/repository/base.interface.repository';
 import { FindAllResponse } from '@type/common.type';
 import { IBaseService } from './base.interface.service';
 import { HydratedDocument } from 'mongoose';

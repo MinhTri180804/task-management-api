@@ -1,4 +1,4 @@
-import { IBaseServiceJwt } from '@shared/jwt/base/jwt.service.base.interface';
+import { IBaseServiceJwt } from 'src/core/base/jwt/jwt.service.base.interface';
 import { JwtSetPasswordTokenPayload } from '../types/payload.type';
 
 export type SignParams = {

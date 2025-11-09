@@ -4,7 +4,7 @@ import {
   SignParams,
 } from './interfaces/set-password.token-service.interface';
 import { JwtService } from '@nestjs/jwt';
-import { BaseServiceJwtAbstract } from '@shared/jwt/base/jwt.service.base.abstract';
+import { BaseServiceJwtAbstract } from 'src/core/base/jwt/jwt.service.base.abstract';
 import { JwtSetPasswordTokenPayload } from './types/payload.type';
 
 @Injectable()

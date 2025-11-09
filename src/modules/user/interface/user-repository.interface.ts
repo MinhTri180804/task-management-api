@@ -1,4 +1,4 @@
-import { IBaseRepository } from '@shared/repositories/base/base.interface.repository';
+import { IBaseRepository } from 'src/core/base/repository/base.interface.repository';
 import { User } from '../entity/user.entity';
 import { HydratedDocument } from 'mongoose';
 

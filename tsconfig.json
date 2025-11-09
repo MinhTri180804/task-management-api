@@ -27,9 +27,10 @@
       "@enum/*": ["src/enum/*"],
       "@setup/*": ["src/setup/*"],
       "@shared/*": ["src/shared/*"],
-      "@core/*": ["src/core/*"],
+      "@core/*": ["src/infrastructure/*"],
       "@util/*": ["src/utils/*"],
-      "@type/*": ["src/types/*"]
+      "@type/*": ["src/types/*"],
+      "@infrastructure/*": ["src/infrastructure/*"]
     }
   }
 }

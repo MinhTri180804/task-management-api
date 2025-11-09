@@ -1,6 +1,6 @@
 import { AuthMethodEnum } from '@enum/auth-method.enum';
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { BaseEntity } from '@shared/entities/base/base.entity';
+import { BaseEntity } from 'src/core/base/entity/base.entity';
 import { HydratedDocument } from 'mongoose';
 
 const DEFAULT_EMAIL_IS_VERIFIED = false;

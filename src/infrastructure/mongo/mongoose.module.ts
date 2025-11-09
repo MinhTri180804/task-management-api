@@ -1,5 +1,5 @@
-import { ConfigModule } from '@core/config/config.module';
-import { MongoDatabaseSetupFactory } from '@core/mongo/mongo.database.factory';
+import { ConfigModule } from '@infrastructure/config/config.module';
+import { MongoDatabaseSetupFactory } from '@infrastructure/mongo/mongo.database.factory';
 import { Module } from '@nestjs/common';
 import { MongooseModule as MongooseModuleNestjs } from '@nestjs/mongoose';
 

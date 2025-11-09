@@ -1,4 +1,4 @@
-import { BaseEntity } from '@shared/entities/base/base.entity';
+import { BaseEntity } from 'src/core/base/entity/base.entity';
 import { IBaseRepository } from './base.interface.repository';
 import { FindAllResponse } from 'src/types/common.type';
 import { FilterQuery, HydratedDocument, Model, QueryOptions } from 'mongoose';

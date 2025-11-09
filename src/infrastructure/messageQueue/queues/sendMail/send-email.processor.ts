@@ -1,8 +1,8 @@
-import { MailService } from '@core/mail/mail.service';
+import { MailService } from '@infrastructure/mail/mail.service';
 import {
   SEND_MAIL_QUEUE_JOB,
   SEND_MAIL_QUEUE_NAME,
-} from '@core/messageQueue/message-queue.constant';
+} from '@infrastructure/messageQueue/message-queue.constant';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import {

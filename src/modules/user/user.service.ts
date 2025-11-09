@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseServiceAbstract } from '@shared/service/base/base.abstract.service';
+import { BaseServiceAbstract } from 'src/core/base/service/base.abstract.service';
 import { User } from './entity/user.entity';
 import { type IUserRepository } from './interface/user-repository.interface';
 import { HydratedDocument } from 'mongoose';

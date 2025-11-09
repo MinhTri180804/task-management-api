@@ -1,6 +1,6 @@
-import { CacheWhiteListService } from '@core/cache/whitelist/cache-white-list.service';
-import { JwtSetPasswordTokenService } from '@core/jwt/setPasswordToken/set-password-token.service';
-import { SendMailQueueService } from '@core/messageQueue/queues/sendMail/send-mail.queue.service';
+import { CacheWhiteListService } from '@infrastructure/cache/whitelist/cache-white-list.service';
+import { JwtSetPasswordTokenService } from '@infrastructure/jwt/setPasswordToken/set-password-token.service';
+import { SendMailQueueService } from '@infrastructure/messageQueue/queues/sendMail/send-mail.queue.service';
 import { AuthMethodEnum } from '@enum/auth-method.enum';
 import { UserService } from '@modules/user/user.service';
 import {

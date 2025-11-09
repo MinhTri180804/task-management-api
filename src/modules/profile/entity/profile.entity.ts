@@ -1,6 +1,6 @@
 import { User } from '@modules/user/entity/user.entity';
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { BaseEntity } from '@shared/entities/base/base.entity';
+import { BaseEntity } from 'src/core/base/entity/base.entity';
 import { HydratedDocument, Types } from 'mongoose';
 
 const AVATAR_DEFAULT_URL =

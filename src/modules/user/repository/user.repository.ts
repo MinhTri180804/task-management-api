@@ -1,4 +1,4 @@
-import { BaseRepositoryAbstract } from '@shared/repositories/base/base.abstract.repository';
+import { BaseRepositoryAbstract } from 'src/core/base/repository/base.abstract.repository';
 import { User } from '../entity/user.entity';
 import {
   FindUserByEmailPrams,

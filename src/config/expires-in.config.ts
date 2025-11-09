@@ -6,7 +6,7 @@ export interface ExpiresInConfig {
   accessToken: string;
   refreshToken: string;
   initProfileToken: string;
-  resetPasswordToken: string;
+  setPasswordToken: string;
 }
 
 export default registerAs(
@@ -15,6 +15,6 @@ export default registerAs(
     accessToken: process.env.JWT_ACCESS_EXPIRES_IN!,
     refreshToken: process.env.JWT_REFRESH_EXPIRES_IN!,
     initProfileToken: process.env.JWT_INIT_PROFILE_EXPIRES_IN!,
-    resetPasswordToken: process.env.JWT_RESET_PASSWORD_EXPIRES_IN!,
+    setPasswordToken: process.env.JWT_SET_PASSWORD_EXPIRES_IN!,
   }),
 );

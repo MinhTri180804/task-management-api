@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BaseServiceAbstract } from '@shared/service/base/base.abstract.service';
 import { User } from './entity/user.entity';
 import { type IUserRepository } from './interface/user-repository.interface';
+import { HydratedDocument } from 'mongoose';
 
 type FindByEmailParams = { email: string };
 
@@ -16,5 +17,10 @@ export class UserService extends BaseServiceAbstract<User> {
 
   async findByEmail({ email }: FindByEmailParams): Promise<User | null> {
     return await this._userRepository.findUserByEmail({ email });
+  }
+
+  async setPassword(user: HydratedDocument<User>, password: string) {
+    user.password = password;
+    await user.save();
   }
 }

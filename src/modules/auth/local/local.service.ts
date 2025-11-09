@@ -1,5 +1,5 @@
-import { CacheService } from '@core/cache/cache.service';
-import { JWTInitProfileTokenService } from '@core/jwt/initProfileToken/init-profile.token.service';
+import { CacheWhiteListService } from '@core/cache/whitelist/cache-white-list.service';
+import { JwtSetPasswordTokenService } from '@core/jwt/setPasswordToken/set-password-token.service';
 import { SendMailQueueService } from '@core/messageQueue/queues/sendMail/send-mail.queue.service';
 import { AuthMethodEnum } from '@enum/auth-method.enum';
 import { UserService } from '@modules/user/user.service';
@@ -21,13 +21,19 @@ type VerifyOTPEmailRegisterParams = {
   otp: string;
 };
 
+type SetPasswordParams = {
+  password: string;
+  passwordConfirm: string;
+  setPasswordToken: string;
+};
+
 @Injectable()
 export class AuthLocalService {
   constructor(
     private readonly _userService: UserService,
-    private readonly _cacheService: CacheService,
+    private readonly _cacheWhitelistService: CacheWhiteListService,
     private readonly _sendMailQueueService: SendMailQueueService,
-    private readonly _jwtInitProfileTokenService: JWTInitProfileTokenService,
+    private readonly _jwtSetPasswordTokenService: JwtSetPasswordTokenService,
   ) {}
 
   async sendOTPVerifyRegister({ email }: SendOTPVerifyEmailRegisterDTO) {
@@ -44,9 +50,10 @@ export class AuthLocalService {
       });
     }
 
-    const verifyExist = await this._cacheService.getVerifyEmailRegister({
-      email,
-    });
+    const verifyExist =
+      await this._cacheWhitelistService.getVerifyEmailRegister({
+        email,
+      });
 
     if (verifyExist) {
       throw new ConflictException(
@@ -56,10 +63,11 @@ export class AuthLocalService {
 
     const otpVerify = generateSecurePin(6);
 
-    const { expiredAt } = await this._cacheService.saveVerifyEmailRegister({
-      email,
-      otp: otpVerify,
-    });
+    const { expiredAt } =
+      await this._cacheWhitelistService.saveVerifyEmailRegister({
+        email,
+        otp: otpVerify,
+      });
 
     await this._sendMailQueueService.verifyEmailRegister({
       otp: otpVerify,
@@ -70,7 +78,9 @@ export class AuthLocalService {
 
   async resendOTPVerifyRegister({ email }: ResendOTPVerifyEmailRegisterDTO) {
     const RESEND_INTERVAL_MS = 30000;
-    const cache = await this._cacheService.getVerifyEmailRegister({ email });
+    const cache = await this._cacheWhitelistService.getVerifyEmailRegister({
+      email,
+    });
     if (!cache) {
       throw new BadRequestException(
         'OTP has expired or does not exist. Please request a new verification.',
@@ -89,10 +99,11 @@ export class AuthLocalService {
 
     const newOtp = generateSecurePin(6);
 
-    const { expiredAt } = await this._cacheService.saveVerifyEmailRegister({
-      email,
-      otp: newOtp,
-    });
+    const { expiredAt } =
+      await this._cacheWhitelistService.saveVerifyEmailRegister({
+        email,
+        otp: newOtp,
+      });
 
     await this._sendMailQueueService.verifyEmailRegister({
       otp: newOtp,
@@ -104,7 +115,9 @@ export class AuthLocalService {
   }
 
   async verifyOTPEmailRegister({ email, otp }: VerifyOTPEmailRegisterParams) {
-    const otpCache = await this._cacheService.getVerifyEmailRegister({ email });
+    const otpCache = await this._cacheWhitelistService.getVerifyEmailRegister({
+      email,
+    });
 
     if (!otpCache) {
       throw new NotFoundException('OTP not found or expired');
@@ -116,8 +129,6 @@ export class AuthLocalService {
       throw new BadRequestException('Invalid OTP');
     }
 
-    await this._cacheService.deleteVerifyEmailRegister({ email });
-
     const user = await this._userService.create({
       email,
       is_email_verified: true,
@@ -125,19 +136,58 @@ export class AuthLocalService {
       primary_auth_method: AuthMethodEnum.LOCAL,
     });
 
-    const initProfileToken = this._jwtInitProfileTokenService.sign({
-      userId: String(user._id),
-      email: user.email,
-    });
-
-    await this._userService.update(String(user._id), {
-      token_init_profile: initProfileToken,
+    const setPasswordToken = this._jwtSetPasswordTokenService.sign({
+      email: email,
+      userId: user._id.toHexString(),
     });
 
     await this._sendMailQueueService.verifiedEmailRegisterSuccessfully({
       email: user.email,
+      setPasswordToken,
     });
 
-    return { initProfileToken };
+    await this._cacheWhitelistService.deleteVerifyEmailRegister({ email });
+
+    return { userId: user._id, setPasswordToken: setPasswordToken };
+  }
+
+  async setPassword({
+    password,
+    passwordConfirm,
+    setPasswordToken,
+  }: SetPasswordParams) {
+    const { sub } = this._jwtSetPasswordTokenService.verify(setPasswordToken);
+
+    if (!sub) {
+      throw new BadRequestException('Invalid set password token');
+    }
+
+    const user = await this._userService.findOne(sub);
+
+    // Check user is exits
+    if (!user) {
+      throw new BadRequestException('User set password not found');
+    }
+
+    // Check user has current password
+    if (user.password) {
+      throw new ConflictException(
+        'Password has already been set. Please log in instead.',
+      );
+    }
+
+    // Check password confirm match with password
+    if (password !== passwordConfirm) {
+      throw new ValidationRequestException({
+        details: [
+          {
+            field: 'passwordConfirm',
+            message: ['Password confirm not match with password'],
+          },
+        ],
+      });
+    }
+
+    await this._userService.setPassword(user, password);
   }
 }

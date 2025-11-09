@@ -8,6 +8,7 @@ export type VerifyEmailRegisterData = VerifyEmailRegisterParams;
 
 export type VerifiedEmailRegisterSuccessfullyParams = {
   email: string;
+  setPasswordToken: string;
 };
 
 export type VerifiedEmailRegisterSuccessfullyData =

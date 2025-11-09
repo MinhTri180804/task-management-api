@@ -59,7 +59,7 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  JWT_RESET_PASSWORD_SECRET: string;
+  JWT_SET_PASSWORD_SECRET: string;
 
   // Expires In
   @IsString()
@@ -76,7 +76,7 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  JWT_RESET_PASSWORD_EXPIRES_IN: string;
+  JWT_SET_PASSWORD_EXPIRES_IN: string;
 
   // Redirect to
   @IsString()

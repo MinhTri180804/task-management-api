@@ -10,7 +10,6 @@ import { CacheService } from './cache.service';
     CacheModuleNestJs.registerAsync({
       inject: [ConfigService],
       useClass: CacheModuleFactory,
-      isGlobal: true,
     }),
   ],
   providers: [CacheService],

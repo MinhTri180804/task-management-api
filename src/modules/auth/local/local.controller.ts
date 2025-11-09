@@ -4,6 +4,7 @@ import { ResponseSuccessMessage } from '@shared/decorators/response-success-mess
 import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
 import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
 import { VerifyOTPEmailRegisterDTO } from '../dto/verify-otp-email-register.dto';
+import { SetPasswordDTO } from '../dto/set-password.dto';
 
 @Controller('auth/local')
 export class AuthLocalController {
@@ -35,14 +36,30 @@ export class AuthLocalController {
   @Post('register/verify-email')
   @ResponseSuccessMessage('Verify email otp successfully')
   async verifyOTPEmailRegister(@Body() data: VerifyOTPEmailRegisterDTO) {
-    const { initProfileToken } =
+    const { userId, setPasswordToken } =
       await this._authLocalService.verifyOTPEmailRegister({
         email: data.email,
         otp: data.otp,
       });
 
     return {
-      token: initProfileToken,
+      userId,
+      setPasswordToken: setPasswordToken,
+    };
+  }
+
+  @Post('register/set-password')
+  @ResponseSuccessMessage('Set password for your account successfully')
+  async setPassword(@Body() data: SetPasswordDTO) {
+    await this._authLocalService.setPassword({
+      password: data.password,
+      passwordConfirm: data.passwordConfirm,
+      setPasswordToken: data.setPasswordToken,
+    });
+
+    return {
+      accessToken: 'mock',
+      refreshToken: 'mock',
     };
   }
 }

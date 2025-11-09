@@ -12,18 +12,20 @@ import { JwtModuleOptions, JwtOptionsFactory } from '@nestjs/jwt';
 import { JwtExpiresIn } from '@type/expires-in-jwt.type';
 
 @Injectable()
-export class JwtInitProfileTokenFactory implements JwtOptionsFactory {
+export class JwtSetPasswordTokenFactory implements JwtOptionsFactory {
   constructor(private readonly _configService: ConfigService) {}
   createJwtOptions(): Promise<JwtModuleOptions> | JwtModuleOptions {
-    const { initProfileToken } =
+    const { setPasswordToken } =
       this._configService.getOrThrow<SecretKeyConfig>(SecretKeyConfigName);
 
-    const { initProfileToken: expiresInInitProfileToken } =
+    const { setPasswordToken: expiresInSetPasswordToken } =
       this._configService.getOrThrow<ExpiresInConfig>(ExpiresInConfigName);
 
     return {
-      secret: initProfileToken,
-      signOptions: { expiresIn: expiresInInitProfileToken as JwtExpiresIn },
+      secret: setPasswordToken,
+      signOptions: {
+        expiresIn: expiresInSetPasswordToken as JwtExpiresIn,
+      },
     };
   }
 }

@@ -17,7 +17,6 @@ export class User extends BaseEntity {
     type: String,
     required: true,
     unique: true,
-    index: true,
   })
   email: string;
 
@@ -47,13 +46,6 @@ export class User extends BaseEntity {
     required: true,
   })
   primary_auth_method: AuthMethodEnum;
-
-  @Prop({
-    type: String,
-    required: false,
-    default: null,
-  })
-  token_init_profile?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

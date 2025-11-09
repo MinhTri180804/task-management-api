@@ -35,10 +35,12 @@ export class SendMailConsumer extends WorkerHost {
       }
 
       case SEND_MAIL_QUEUE_JOB.VERIFIED_EMAIL_REGISTER_SUCCESSFULLY: {
-        const { email } = job.data as VerifiedEmailRegisterSuccessfullyData;
+        const { email, setPasswordToken } =
+          job.data as VerifiedEmailRegisterSuccessfullyData;
 
         await this._mailService.sendVerifiedEmailRegisterSuccessfully({
           email,
+          setPasswordToken,
         });
         break;
       }

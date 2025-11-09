@@ -1,5 +1,5 @@
 import { ModelDefinition } from '@nestjs/mongoose';
-import { hashPassword } from '@util/password.util';
+import { hashPassword } from '@shared/utils/password.util';
 import {
   CallbackWithoutResultAndOptionalError,
   HydratedDocument,

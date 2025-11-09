@@ -24,12 +24,12 @@
     "paths": {
       "@modules/*": ["src/modules/*"],
       "@config/*": ["src/config/*"],
-      "@enum/*": ["src/enum/*"],
+      "@enum/*": ["src/core/enum/*"],
       "@setup/*": ["src/setup/*"],
       "@shared/*": ["src/shared/*"],
       "@core/*": ["src/infrastructure/*"],
-      "@util/*": ["src/utils/*"],
-      "@type/*": ["src/types/*"],
+      "@util/*": ["src/shared/utils/*"],
+      "@type/*": ["src/core/types/*"],
       "@infrastructure/*": ["src/infrastructure/*"]
     }
   }

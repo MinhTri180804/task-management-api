@@ -6,7 +6,7 @@ import {
   IsString,
   validateSync,
 } from 'class-validator';
-import { NodeEnvEnum } from 'src/enum/node-env.enum';
+import { NodeEnvEnum } from 'src/core/enum/node-env.enum';
 
 export class EnvironmentVariables {
   // App

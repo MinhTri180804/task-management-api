@@ -9,7 +9,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions, JwtOptionsFactory } from '@nestjs/jwt';
-import { JwtExpiresIn } from '@type/expires-in-jwt.type';
+import { JwtExpiresIn } from 'src/core/types/expires-in-jwt.type';
 
 @Injectable()
 export class JwtSetPasswordTokenFactory implements JwtOptionsFactory {

@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RESPONSE_SUCCESS_MESSAGE_METADATA } from '@shared/decorators/response-success-message.decorator';
-import { ApiResponseSuccess } from '@type/response.type';
+import { ApiResponseSuccess } from 'src/core/types/response.type';
 import { Response } from 'express';
 import { map, Observable } from 'rxjs';
 

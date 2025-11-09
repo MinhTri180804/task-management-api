@@ -4,7 +4,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
-import { cleanObject } from '@util/clean-object.util';
+import { cleanObject } from '@shared/utils/clean-object.util';
 
 export class StrictValidationPipe extends ValidationPipe {
   constructor() {

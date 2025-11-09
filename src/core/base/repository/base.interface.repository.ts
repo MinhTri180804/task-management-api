@@ -1,4 +1,4 @@
-import { FindAllResponse } from 'src/types/common.type';
+import { FindAllResponse } from 'src/core/types/common.type';
 
 export interface IBaseRepository<T, K = T> {
   create(dto: T): Promise<K>;

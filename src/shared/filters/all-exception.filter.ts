@@ -1,12 +1,12 @@
-import { NodeEnvEnum } from '@enum/node-env.enum';
+import { NodeEnvEnum } from 'src/core/enum/node-env.enum';
 import {
   ArgumentsHost,
   ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { BaseErrorParamExceptionObject } from '@type/common.type';
-import { ApiResponseError } from '@type/response.type';
+import { BaseErrorParamExceptionObject } from 'src/core/types/common.type';
+import { ApiResponseError } from 'src/core/types/response.type';
 import { Response } from 'express';
 import { STATUS_CODES } from 'http';
 

@@ -1,7 +1,7 @@
 import { CacheWhiteListService } from '@infrastructure/cache/whitelist/cache-white-list.service';
 import { JwtSetPasswordTokenService } from '@infrastructure/jwt/setPasswordToken/set-password-token.service';
 import { SendMailQueueService } from '@infrastructure/messageQueue/queues/sendMail/send-mail.queue.service';
-import { AuthMethodEnum } from '@enum/auth-method.enum';
+import { AuthMethodEnum } from 'src/core/enum/auth-method.enum';
 import { UserService } from '@modules/user/user.service';
 import {
   BadRequestException,
@@ -11,8 +11,8 @@ import {
 } from '@nestjs/common';
 import { TooManyRequestsException } from '@shared/exceptions/too-many-request.exception';
 import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
-import { generateSecurePin } from '@util/generateSecurePin.util';
-import { remainingMS } from '@util/remaining-ms.util';
+import { generateSecurePin } from '@shared/utils/generateSecurePin.util';
+import { remainingMS } from '@shared/utils/remaining-ms.util';
 import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
 import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
 

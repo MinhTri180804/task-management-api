@@ -9,6 +9,7 @@ export type VerifyEmailRegisterData = VerifyEmailRegisterParams;
 export type VerifiedEmailRegisterSuccessfullyParams = {
   email: string;
   setPasswordToken: string;
+  expiresAt: number;
 };
 
 export type VerifiedEmailRegisterSuccessfullyData =

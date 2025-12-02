@@ -1,11 +1,13 @@
-import { CacheWhiteListService } from '@infrastructure/cache/whitelist/cache-white-list.service';
+import { CACHE_SERVICE_TOKEN } from '@core/cache/cache.token';
+import { type ISetPasswordTokenCacheWhiteListService } from '@core/cache/whitelist/set-password-token/set-password.token.service';
+import { type IVerifyEmailRegisterCacheWhiteListService } from '@core/cache/whitelist/verify-email-register/verify-email-register.service';
 import { JwtSetPasswordTokenService } from '@infrastructure/jwt/setPasswordToken/set-password-token.service';
 import { SendMailQueueService } from '@infrastructure/messageQueue/queues/sendMail/send-mail.queue.service';
-import { AuthMethodEnum } from 'src/core/enum/auth-method.enum';
 import { UserService } from '@modules/user/user.service';
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,6 +15,7 @@ import { TooManyRequestsException } from '@shared/exceptions/too-many-request.ex
 import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
 import { generateSecurePin } from '@shared/utils/generateSecurePin.util';
 import { remainingMS } from '@shared/utils/remaining-ms.util';
+import { AuthMethodEnum } from 'src/core/enum/auth-method.enum';
 import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
 import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
 
@@ -31,9 +34,14 @@ type SetPasswordParams = {
 export class AuthLocalService {
   constructor(
     private readonly _userService: UserService,
-    private readonly _cacheWhitelistService: CacheWhiteListService,
     private readonly _sendMailQueueService: SendMailQueueService,
     private readonly _jwtSetPasswordTokenService: JwtSetPasswordTokenService,
+
+    @Inject(CACHE_SERVICE_TOKEN.WHITE_LIST.SET_PASSWORD_TOKEN)
+    private readonly _setPasswordTokenCacheWhiteListService: ISetPasswordTokenCacheWhiteListService,
+
+    @Inject(CACHE_SERVICE_TOKEN.WHITE_LIST.VERIFY_EMAIL_REGISTER)
+    private readonly _verifyEmailRegisterCacheWhitelistService: IVerifyEmailRegisterCacheWhiteListService,
   ) {}
 
   async sendOTPVerifyRegister({ email }: SendOTPVerifyEmailRegisterDTO) {
@@ -51,7 +59,7 @@ export class AuthLocalService {
     }
 
     const verifyExist =
-      await this._cacheWhitelistService.getVerifyEmailRegister({
+      await this._verifyEmailRegisterCacheWhitelistService.get({
         email,
       });
 
@@ -64,7 +72,7 @@ export class AuthLocalService {
     const otpVerify = generateSecurePin(6);
 
     const { expiredAt } =
-      await this._cacheWhitelistService.saveVerifyEmailRegister({
+      await this._verifyEmailRegisterCacheWhitelistService.set({
         email,
         otp: otpVerify,
       });
@@ -78,7 +86,7 @@ export class AuthLocalService {
 
   async resendOTPVerifyRegister({ email }: ResendOTPVerifyEmailRegisterDTO) {
     const RESEND_INTERVAL_MS = 30000;
-    const cache = await this._cacheWhitelistService.getVerifyEmailRegister({
+    const cache = await this._verifyEmailRegisterCacheWhitelistService.get({
       email,
     });
     if (!cache) {
@@ -100,7 +108,7 @@ export class AuthLocalService {
     const newOtp = generateSecurePin(6);
 
     const { expiredAt } =
-      await this._cacheWhitelistService.saveVerifyEmailRegister({
+      await this._verifyEmailRegisterCacheWhitelistService.set({
         email,
         otp: newOtp,
       });
@@ -115,7 +123,7 @@ export class AuthLocalService {
   }
 
   async verifyOTPEmailRegister({ email, otp }: VerifyOTPEmailRegisterParams) {
-    const otpCache = await this._cacheWhitelistService.getVerifyEmailRegister({
+    const otpCache = await this._verifyEmailRegisterCacheWhitelistService.get({
       email,
     });
 
@@ -141,12 +149,20 @@ export class AuthLocalService {
       userId: user._id.toHexString(),
     });
 
+    const { expiresAt } = await this._setPasswordTokenCacheWhiteListService.set(
+      {
+        userId: user._id.toHexString(),
+        token: setPasswordToken,
+      },
+    );
+
     await this._sendMailQueueService.verifiedEmailRegisterSuccessfully({
       email: user.email,
       setPasswordToken,
+      expiresAt,
     });
 
-    await this._cacheWhitelistService.deleteVerifyEmailRegister({ email });
+    await this._verifyEmailRegisterCacheWhitelistService.del({ email });
 
     return { userId: user._id, setPasswordToken: setPasswordToken };
   }
@@ -159,6 +175,17 @@ export class AuthLocalService {
     const { sub } = this._jwtSetPasswordTokenService.verify(setPasswordToken);
 
     if (!sub) {
+      throw new BadRequestException('Invalid set password token');
+    }
+
+    const hasInWhiteList =
+      await this._setPasswordTokenCacheWhiteListService.get({ userId: sub });
+
+    if (!hasInWhiteList) {
+      throw new BadRequestException('Invalid set password token');
+    }
+
+    if (hasInWhiteList.token !== setPasswordToken) {
       throw new BadRequestException('Invalid set password token');
     }
 
@@ -189,5 +216,9 @@ export class AuthLocalService {
     }
 
     await this._userService.setPassword(user, password);
+
+    await this._setPasswordTokenCacheWhiteListService.del({ userId: sub });
+
+    return;
   }
 }

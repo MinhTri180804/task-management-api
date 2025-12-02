@@ -1,10 +1,14 @@
+import { dateTimeFormat } from '@shared/utils/time-format.util';
+
 type CreateProfileRegisterTemplatePrams = {
   email: string;
   setPasswordToken: string;
+  expiresAt: number;
 };
 export default function sendVerifyEmailRegisterSuccessfullyTemplate({
   email,
   setPasswordToken,
+  expiresAt,
 }: CreateProfileRegisterTemplatePrams) {
   return `
         <h1>
@@ -18,6 +22,9 @@ export default function sendVerifyEmailRegisterSuccessfullyTemplate({
             </hr>
             ${setPasswordToken}
         </h5>
+        <p>
+            This link will expire at ${dateTimeFormat(expiresAt)}
+        </p>
         <div>
         </div>
     `;

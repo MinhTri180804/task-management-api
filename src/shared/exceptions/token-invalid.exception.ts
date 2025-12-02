@@ -1,13 +1,12 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { type BaseErrorParamExceptionObject } from '@type/common.type';
 
-const DEFAULT_MESSAGE = 'Too many requests. Please try again later.';
-const DEFAULT_ERROR_CODE = 'TOO_MANY_REQUEST';
-const DEFAULT_STATUS_CODE = HttpStatus.TOO_MANY_REQUESTS;
+const DEFAULT_MESSAGE = 'Token invalid';
+const DEFAULT_ERROR_CODE = 'TOKEN_INVALID';
 
 type ConstructorParams = BaseErrorParamExceptionObject & {};
 
-export class TooManyRequestsException extends HttpException {
+export class TokenInvalidException extends HttpException {
   constructor({
     message = DEFAULT_MESSAGE,
     errorCode = DEFAULT_ERROR_CODE,
@@ -16,10 +15,10 @@ export class TooManyRequestsException extends HttpException {
     super(
       {
         message,
-        errorCode,
         details,
+        errorCode,
       },
-      DEFAULT_STATUS_CODE,
+      HttpStatus.BAD_REQUEST,
     );
   }
 }

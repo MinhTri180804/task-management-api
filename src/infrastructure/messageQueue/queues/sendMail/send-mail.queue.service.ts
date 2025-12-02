@@ -37,10 +37,12 @@ export class SendMailQueueService {
   async verifiedEmailRegisterSuccessfully({
     email,
     setPasswordToken,
+    expiresAt,
   }: VerifiedEmailRegisterSuccessfullyParams) {
     const params: VerifiedEmailRegisterSuccessfullyParams = {
       email,
       setPasswordToken,
+      expiresAt,
     };
     await this._sendMailQueue.add(
       SEND_MAIL_QUEUE_JOB.VERIFIED_EMAIL_REGISTER_SUCCESSFULLY,

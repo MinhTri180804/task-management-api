@@ -22,7 +22,6 @@ export class AllExceptionFilter implements ExceptionFilter {
       const exceptionResponse = exception.getResponse();
 
       responseBody = this._mapExceptionToResponse(responseBody, exception);
-
       if (typeof exceptionResponse === 'string') {
         responseBody.message = exceptionResponse;
       } else if (
@@ -32,11 +31,17 @@ export class AllExceptionFilter implements ExceptionFilter {
           (exceptionResponse as BaseErrorParamExceptionObject).details ?? null;
       }
 
+      if ((exceptionResponse as BaseErrorParamExceptionObject)?.errorCode) {
+        responseBody.errorCode = (
+          exceptionResponse as BaseErrorParamExceptionObject
+        ).errorCode;
+      }
+
       if (process.env.NODE_ENV !== NodeEnvEnum.DEVELOPMENT)
         delete responseBody.stacks;
-
-      response.status(responseBody.statusCode).json(responseBody);
     }
+
+    response.status(responseBody.statusCode).json(responseBody);
   }
 
   private _defaultResponseBody(): ApiResponseError {
@@ -45,6 +50,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const details: string | object | null = null;
     const cause: unknown = null;
     const stacks: unknown = null;
+    const errorCode: string = 'UNKNOWN_ERROR';
 
     return {
       isSuccess: false,
@@ -53,6 +59,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       details,
       cause,
       stacks,
+      errorCode,
     };
   }
 

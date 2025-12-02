@@ -12,4 +12,5 @@ export type ApiResponseError = {
   details: object | string | null | Array<object>;
   cause?: any;
   stacks?: any;
+  errorCode?: string;
 };

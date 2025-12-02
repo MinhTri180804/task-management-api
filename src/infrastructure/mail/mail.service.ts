@@ -14,6 +14,7 @@ type SendVerifyEmailRegisterParams = {
 type SendVerifiedEmailRegisterSuccessfully = {
   email: string;
   setPasswordToken: string;
+  expiresAt: number;
 };
 
 @Injectable()
@@ -70,6 +71,7 @@ export class MailService {
   async sendVerifiedEmailRegisterSuccessfully({
     email,
     setPasswordToken,
+    expiresAt,
   }: SendVerifiedEmailRegisterSuccessfully) {
     const { data, error } = await this._resend.emails.send({
       from: this._emailForm,
@@ -78,6 +80,7 @@ export class MailService {
       html: sendVerifyEmailRegisterSuccessfullyTemplate({
         email,
         setPasswordToken,
+        expiresAt,
       }),
     });
 

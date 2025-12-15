@@ -7,4 +7,7 @@ export class BaseEntity {
 
   @Prop({ default: null, required: false })
   deleted_at?: Date;
+
+  createdAt?: string;
+  updatedAt?: string;
 }

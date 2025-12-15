@@ -1,10 +1,21 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthLocalService } from './local.service';
+import { User } from '@modules/user/entity/user.entity';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ResponseSuccessMessage } from '@shared/decorators/response-success-message.decorator';
-import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
 import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
-import { VerifyOTPEmailRegisterDTO } from '../dto/verify-otp-email-register.dto';
+import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
 import { SetPasswordDTO } from '../dto/set-password.dto';
+import { VerifyOTPEmailRegisterDTO } from '../dto/verify-otp-email-register.dto';
+import { LocalAuthGuard } from './local.guard';
+import { AuthLocalService } from './local.service';
+import { ResponseSuccessStatus } from '@shared/decorators/response-success-status.decorator';
+import { LoginDTO } from '../dto/login';
 
 @Controller('auth/local')
 export class AuthLocalController {
@@ -61,5 +72,19 @@ export class AuthLocalController {
       accessToken: 'mock',
       refreshToken: 'mock',
     };
+  }
+
+  @Post('login')
+  @UseGuards(LocalAuthGuard)
+  @ResponseSuccessMessage('Login successfully')
+  @ResponseSuccessStatus(HttpStatus.OK)
+  login(
+    @Request() req: { user: Omit<User, 'password'> },
+    @Body() data: LoginDTO,
+  ) {
+    return this._authLocalService.login({
+      user: req.user,
+      deviceId: data.deviceId,
+    });
   }
 }

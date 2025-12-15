@@ -4,6 +4,7 @@ import { RESPONSE_SUCCESS_MESSAGE_METADATA } from '@shared/decorators/response-s
 import { ApiResponseSuccess } from 'src/core/types/response.type';
 import { Response } from 'express';
 import { map, Observable } from 'rxjs';
+import { RESPONSE_SUCCESS_STATUS_METADATA } from '@shared/decorators/response-success-status.decorator';
 
 export class ResponseTransformInterceptor<T> implements NestInterceptor<T> {
   constructor(private readonly _reflector: Reflector) {}
@@ -23,7 +24,10 @@ export class ResponseTransformInterceptor<T> implements NestInterceptor<T> {
   ): ApiResponseSuccess<T> {
     const ctx = context.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const statusCode = response.statusCode;
+    const statusCode = this._reflector.get<number>(
+      RESPONSE_SUCCESS_STATUS_METADATA,
+      context.getHandler() || response.statusCode,
+    );
     const message = this._reflector.get<string>(
       RESPONSE_SUCCESS_MESSAGE_METADATA,
       context.getHandler() || 'Success',

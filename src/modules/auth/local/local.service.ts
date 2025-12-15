@@ -1,6 +1,8 @@
 import { CACHE_SERVICE_TOKEN } from '@core/cache/cache.token';
 import { type ISetPasswordTokenCacheWhiteListService } from '@core/cache/whitelist/set-password-token/set-password.token.service';
 import { type IVerifyEmailRegisterCacheWhiteListService } from '@core/cache/whitelist/verify-email-register/verify-email-register.service';
+import { JWTAccessTokenService } from '@core/jwt/accessToken/access-token.service';
+import { JWTRefreshTokenService } from '@core/jwt/refreshToken/refresh-token.service';
 import { JwtSetPasswordTokenService } from '@infrastructure/jwt/setPasswordToken/set-password-token.service';
 import { SendMailQueueService } from '@infrastructure/messageQueue/queues/sendMail/send-mail.queue.service';
 import { UserService } from '@modules/user/user.service';
@@ -14,21 +16,23 @@ import {
 import { TooManyRequestsException } from '@shared/exceptions/too-many-request.exception';
 import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
 import { generateSecurePin } from '@shared/utils/generateSecurePin.util';
+import { comparePassword } from '@shared/utils/password.util';
 import { remainingMS } from '@shared/utils/remaining-ms.util';
 import { AuthMethodEnum } from 'src/core/enum/auth-method.enum';
-import { ResendOTPVerifyEmailRegisterDTO } from '../dto/resend-otp-verify-email-register.dto';
-import { SendOTPVerifyEmailRegisterDTO } from '../dto/send-otp-verify-email-register.dto';
-
-type VerifyOTPEmailRegisterParams = {
-  email: string;
-  otp: string;
-};
-
-type SetPasswordParams = {
-  password: string;
-  passwordConfirm: string;
-  setPasswordToken: string;
-};
+import {
+  LoginParams,
+  LoginReturn,
+  ResendOTPVerifyRegisterParams,
+  ResendOTPVerifyRegisterReturn,
+  SendOTPVerifyRegisterParams,
+  SendOTPVerifyRegisterReturn,
+  SetPasswordParams,
+  SetPasswordReturn,
+  ValidateParams,
+  ValidateReturn,
+  VerifyOTPEmailRegisterParams,
+  VerifyOTPEmailRegisterReturn,
+} from './local.service.type';
 
 @Injectable()
 export class AuthLocalService {
@@ -36,6 +40,8 @@ export class AuthLocalService {
     private readonly _userService: UserService,
     private readonly _sendMailQueueService: SendMailQueueService,
     private readonly _jwtSetPasswordTokenService: JwtSetPasswordTokenService,
+    private readonly _jwtAccessTokenService: JWTAccessTokenService,
+    private readonly _jwtRefreshTokenService: JWTRefreshTokenService,
 
     @Inject(CACHE_SERVICE_TOKEN.WHITE_LIST.SET_PASSWORD_TOKEN)
     private readonly _setPasswordTokenCacheWhiteListService: ISetPasswordTokenCacheWhiteListService,
@@ -44,7 +50,9 @@ export class AuthLocalService {
     private readonly _verifyEmailRegisterCacheWhitelistService: IVerifyEmailRegisterCacheWhiteListService,
   ) {}
 
-  async sendOTPVerifyRegister({ email }: SendOTPVerifyEmailRegisterDTO) {
+  async sendOTPVerifyRegister({
+    email,
+  }: SendOTPVerifyRegisterParams): Promise<SendOTPVerifyRegisterReturn> {
     const userByEmail = await this._userService.findByEmail({ email });
 
     if (userByEmail) {
@@ -84,7 +92,9 @@ export class AuthLocalService {
     });
   }
 
-  async resendOTPVerifyRegister({ email }: ResendOTPVerifyEmailRegisterDTO) {
+  async resendOTPVerifyRegister({
+    email,
+  }: ResendOTPVerifyRegisterParams): Promise<ResendOTPVerifyRegisterReturn> {
     const RESEND_INTERVAL_MS = 30000;
     const cache = await this._verifyEmailRegisterCacheWhitelistService.get({
       email,
@@ -122,7 +132,10 @@ export class AuthLocalService {
     return;
   }
 
-  async verifyOTPEmailRegister({ email, otp }: VerifyOTPEmailRegisterParams) {
+  async verifyOTPEmailRegister({
+    email,
+    otp,
+  }: VerifyOTPEmailRegisterParams): Promise<VerifyOTPEmailRegisterReturn> {
     const otpCache = await this._verifyEmailRegisterCacheWhitelistService.get({
       email,
     });
@@ -164,14 +177,17 @@ export class AuthLocalService {
 
     await this._verifyEmailRegisterCacheWhitelistService.del({ email });
 
-    return { userId: user._id, setPasswordToken: setPasswordToken };
+    return {
+      userId: user._id.toHexString(),
+      setPasswordToken: setPasswordToken,
+    };
   }
 
   async setPassword({
     password,
     passwordConfirm,
     setPasswordToken,
-  }: SetPasswordParams) {
+  }: SetPasswordParams): Promise<SetPasswordReturn> {
     const { sub } = this._jwtSetPasswordTokenService.verify(setPasswordToken);
 
     if (!sub) {
@@ -220,5 +236,46 @@ export class AuthLocalService {
     await this._setPasswordTokenCacheWhiteListService.del({ userId: sub });
 
     return;
+  }
+
+  async validate({ email, password }: ValidateParams): Promise<ValidateReturn> {
+    const user = await this._userService.findByEmail({ email });
+
+    if (!user) return null;
+
+    if (!user.password) return null;
+
+    const isMatchPassword = await comparePassword({
+      password,
+      hashPassword: user.password,
+    });
+
+    if (!isMatchPassword) return null;
+    delete user.password;
+
+    return user;
+  }
+
+  login({ user, deviceId }: LoginParams): LoginReturn {
+    const accessToken = this._jwtAccessTokenService.sign({
+      userId: user._id!.toHexString(),
+      email: user.email,
+      deviceId,
+      isEmailVerified: user.is_email_verified,
+      localAuthEnabled: user.local_auth_enabled,
+      primaryAuthMethod: user.primary_auth_method,
+      createdAt: user.createdAt!,
+      updatedAt: user.updatedAt!,
+    });
+
+    const refreshToken = this._jwtRefreshTokenService.sign({
+      userId: user._id!.toHexString(),
+      deviceId,
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

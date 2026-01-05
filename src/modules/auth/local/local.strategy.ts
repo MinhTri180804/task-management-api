@@ -1,6 +1,7 @@
 import { User } from '@modules/user/entity/user.entity';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { ValidationRequestException } from '@shared/exceptions/validation-request.exception';
 import { Strategy } from 'passport-local';
 import { AuthLocalService } from './local.service';
 
@@ -15,7 +16,19 @@ export class LocalAuthStrategy extends PassportStrategy(Strategy) {
   ): Promise<Omit<User, 'password'>> {
     const user = await this._authLocalService.validate({ email, password });
     if (!user) {
-      throw new BadRequestException('Invalid email or password');
+      throw new ValidationRequestException({
+        message: 'Invalid email or password',
+        details: [
+          {
+            field: 'email',
+            message: ['Email is not correct'],
+          },
+          {
+            field: 'password',
+            message: ['Password is incorrect'],
+          },
+        ],
+      });
     }
 
     return user;

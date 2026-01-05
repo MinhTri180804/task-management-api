@@ -2,18 +2,18 @@ import { IsMatch } from '@shared/decorators/is-match.decorator';
 import { IsPasswordPattern } from '@shared/decorators/is-password-pattern.decorator';
 import { IsJWT, IsString } from 'class-validator';
 
-export class SetPasswordDTO {
+export class ResetPasswordDTO {
   @IsJWT()
-  setPasswordToken: string;
+  resetPasswordToken: string;
 
   @IsString()
   @IsPasswordPattern()
-  password: string;
+  newPassword: string;
 
   @IsString()
-  @IsMatch('password', {
-    message: 'Passwords confirm do not match with password',
+  @IsPasswordPattern()
+  @IsMatch('newPassword', {
+    message: 'Password confirm do not match with password',
   })
-  @IsPasswordPattern()
-  passwordConfirm: string;
+  newPasswordConfirm: string;
 }

@@ -6,6 +6,7 @@ import {
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import {
+  ForgotPasswordData,
   VerifiedEmailRegisterSuccessfullyData,
   VerifyEmailRegisterData,
 } from './send-email.type';
@@ -21,6 +22,7 @@ export class SendMailConsumer extends WorkerHost {
       | { emailTo: string }
       | VerifyEmailRegisterData
       | VerifiedEmailRegisterSuccessfullyData
+      | ForgotPasswordData
     >,
   ): Promise<any> {
     switch (job.name) {
@@ -41,6 +43,18 @@ export class SendMailConsumer extends WorkerHost {
         await this._mailService.sendVerifiedEmailRegisterSuccessfully({
           email,
           setPasswordToken,
+          expiresAt,
+        });
+        break;
+      }
+
+      case SEND_MAIL_QUEUE_JOB.FORGOT_PASSWORD: {
+        const { email, forgotPasswordToken, expiresAt } =
+          job.data as ForgotPasswordData;
+
+        await this._mailService.sendForgotPassword({
+          email,
+          token: forgotPasswordToken,
           expiresAt,
         });
         break;

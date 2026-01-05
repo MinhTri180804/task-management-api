@@ -44,6 +44,10 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   RESEND_EMAIL_FROM: string;
 
+  // Resend time - second value
+  @IsNumber()
+  RESEND_VERIFY_EMAIL_REGISTER_SECOND: number;
+
   // Secret Keys
   @IsString()
   @IsNotEmpty()
@@ -61,6 +65,10 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   JWT_SET_PASSWORD_SECRET: string;
 
+  @IsString()
+  @IsNotEmpty()
+  JWT_FORGOT_PASSWORD_SECRET: string;
+
   // Expires In
   @IsString()
   @IsNotEmpty()
@@ -77,6 +85,14 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   JWT_SET_PASSWORD_EXPIRES_IN: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_FORGOT_PASSWORD_EXPIRES_IN: string;
+
+  // Expires In - second value
+  @IsNumber()
+  VERIFY_EMAIL_REGISTER_EXPIRES_SECOND: number;
 
   // Redirect to
   @IsString()

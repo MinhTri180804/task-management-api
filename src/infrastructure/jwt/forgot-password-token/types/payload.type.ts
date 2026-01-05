@@ -1,4 +1,4 @@
-export type JwtSetPasswordTokenPayload = {
+export type JwtForgotPasswordTokenPayload = {
   email: string;
   sub: string;
   exp: number;

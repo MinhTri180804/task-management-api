@@ -7,6 +7,8 @@ export interface ExpiresInConfig {
   refreshToken: string;
   initProfileToken: string;
   setPasswordToken: string;
+  forgotPasswordToken: string;
+  verifyEmailRegisterSecond: number;
 }
 
 export default registerAs(
@@ -16,5 +18,9 @@ export default registerAs(
     refreshToken: process.env.JWT_REFRESH_EXPIRES_IN!,
     initProfileToken: process.env.JWT_INIT_PROFILE_EXPIRES_IN!,
     setPasswordToken: process.env.JWT_SET_PASSWORD_EXPIRES_IN!,
+    forgotPasswordToken: process.env.JWT_FORGOT_PASSWORD_EXPIRES_IN!,
+    verifyEmailRegisterSecond: Number(
+      process.env.VERIFY_EMAIL_REGISTER_EXPIRES_SECOND!,
+    ),
   }),
 );

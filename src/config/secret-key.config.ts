@@ -7,6 +7,7 @@ export interface SecretKeyConfig {
   refreshToken: string;
   initProfileToken: string;
   setPasswordToken: string;
+  forgotPasswordToken: string;
 }
 
 export default registerAs(
@@ -16,5 +17,6 @@ export default registerAs(
     refreshToken: process.env.JWT_REFRESH_SECRET!,
     initProfileToken: process.env.JWT_INIT_PROFILE_SECRET!,
     setPasswordToken: process.env.JWT_SET_PASSWORD_SECRET!,
+    forgotPasswordToken: process.env.JWT_FORGOT_PASSWORD_SECRET!,
   }),
 );

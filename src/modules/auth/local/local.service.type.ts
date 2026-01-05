@@ -26,6 +26,15 @@ export type LoginParams = {
   deviceId: string;
 };
 
+export type ForgotPasswordParams = {
+  email: string;
+};
+
+export type ResetPasswordParams = {
+  token: string;
+  newPassword: string;
+};
+
 // Type Return
 export type LoginReturn = {
   accessToken: string;

@@ -2,7 +2,7 @@ import { CacheModule as CacheModuleNestJs } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
 import { CacheModuleFactory } from './cache.factory';
 import { Global, Module } from '@nestjs/common';
-import { CacheService } from './cache.service';
+import { CacheManagerService } from './cache.service';
 
 @Global()
 @Module({
@@ -12,7 +12,7 @@ import { CacheService } from './cache.service';
       useClass: CacheModuleFactory,
     }),
   ],
-  providers: [CacheService],
-  exports: [CacheService, CacheModuleNestJs],
+  providers: [CacheManagerService],
+  exports: [CacheManagerService, CacheModuleNestJs],
 })
 export class CacheModule {}

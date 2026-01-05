@@ -14,3 +14,11 @@ export type VerifiedEmailRegisterSuccessfullyParams = {
 
 export type VerifiedEmailRegisterSuccessfullyData =
   VerifiedEmailRegisterSuccessfullyParams;
+
+export type ForgotPasswordParams = {
+  email: string;
+  forgotPasswordToken: string;
+  expiresAt: number;
+};
+
+export type ForgotPasswordData = ForgotPasswordParams;

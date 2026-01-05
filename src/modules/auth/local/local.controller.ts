@@ -15,14 +15,18 @@ import { VerifyOTPEmailRegisterDTO } from '../dto/verify-otp-email-register.dto'
 import { LocalAuthGuard } from './local.guard';
 import { AuthLocalService } from './local.service';
 import { ResponseSuccessStatus } from '@shared/decorators/response-success-status.decorator';
-import { LoginDTO } from '../dto/login';
+import { LoginDTO } from '../dto/login.dto';
+import { ResetPasswordDTO } from '../dto/reset-password.dto';
+import { ForgotPasswordDTO } from '../dto/forgot-password.dto';
 
 @Controller('auth/local')
 export class AuthLocalController {
   constructor(private readonly _authLocalService: AuthLocalService) {}
 
   @Post('register/verify-email/send-otp')
-  @ResponseSuccessMessage('Send OTP to your email successfully')
+  @ResponseSuccessMessage(
+    'If the email is valid, you’ll receive further instructions.',
+  )
   async sendOTPVerifyEmailRegister(
     @Body() sendOTPVerifyEmailRegisterDTO: SendOTPVerifyEmailRegisterDTO,
   ) {
@@ -68,10 +72,24 @@ export class AuthLocalController {
       setPasswordToken: data.setPasswordToken,
     });
 
-    return {
-      accessToken: 'mock',
-      refreshToken: 'mock',
-    };
+    return;
+  }
+
+  @Post('forgot-password')
+  @ResponseSuccessMessage('Forgot password email sent successfully')
+  async forgotPassword(@Body() data: ForgotPasswordDTO) {
+    await this._authLocalService.forgotPassword({ email: data.email });
+    return;
+  }
+
+  @Post('reset-password')
+  @ResponseSuccessMessage('Reset password successfully')
+  async resetPassword(@Body() data: ResetPasswordDTO) {
+    await this._authLocalService.resetPassword({
+      token: data.resetPasswordToken,
+      newPassword: data.newPassword,
+    });
+    return;
   }
 
   @Post('login')
@@ -79,8 +97,8 @@ export class AuthLocalController {
   @ResponseSuccessMessage('Login successfully')
   @ResponseSuccessStatus(HttpStatus.OK)
   login(
-    @Request() req: { user: Omit<User, 'password'> },
     @Body() data: LoginDTO,
+    @Request() req: { user: Omit<User, 'password'> },
   ) {
     return this._authLocalService.login({
       user: req.user,

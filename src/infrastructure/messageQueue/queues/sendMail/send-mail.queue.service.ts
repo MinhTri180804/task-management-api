@@ -6,6 +6,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import {
+  ForgotPasswordParams,
   VerifiedEmailRegisterSuccessfullyParams,
   VerifyEmailRegisterParams,
 } from './send-email.type';
@@ -48,5 +49,9 @@ export class SendMailQueueService {
       SEND_MAIL_QUEUE_JOB.VERIFIED_EMAIL_REGISTER_SUCCESSFULLY,
       params,
     );
+  }
+
+  async forgotPassword(params: ForgotPasswordParams) {
+    await this._sendMailQueue.add(SEND_MAIL_QUEUE_JOB.FORGOT_PASSWORD, params);
   }
 }

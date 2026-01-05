@@ -1,8 +1,6 @@
 // === Params Method
 export type GetKeyParams = { userId: string };
 export type GetParams = { userId: string };
-
-// ttl in ms
 export type SaveParams = { userId: string; token: string };
 export type DeleteParams = { userId: string };
 

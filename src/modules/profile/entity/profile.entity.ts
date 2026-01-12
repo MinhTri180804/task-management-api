@@ -1,7 +1,7 @@
 import { User } from '@modules/user/entity/user.entity';
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { BaseEntity } from 'src/core/base/entity/base.entity';
 import { HydratedDocument, Types } from 'mongoose';
+import { BaseEntity } from 'src/core/base/entity/base.entity';
 
 const AVATAR_DEFAULT_URL =
   'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg';
@@ -13,8 +13,14 @@ export type ProfileDocument = HydratedDocument<Profile>;
 
 @Schema({ collection: COLLECTION_NAME, versionKey: false, timestamps: true })
 export class Profile extends BaseEntity {
-  @Prop({ type: Types.ObjectId, required: true, ref: User.name })
-  user_id: User;
+  @Prop({
+    type: Types.ObjectId,
+    required: true,
+    ref: User.name,
+    index: true,
+    unique: true,
+  })
+  user_id: Types.ObjectId;
 
   @Prop({ type: String, required: true })
   first_name: string;
@@ -23,7 +29,7 @@ export class Profile extends BaseEntity {
   last_name: string;
 
   @Prop({ type: String, required: false, default: AVATAR_DEFAULT_URL })
-  avatar_url: string;
+  avatar_url?: string;
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);

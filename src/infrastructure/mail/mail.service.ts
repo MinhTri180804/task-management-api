@@ -5,7 +5,6 @@ import { CreateEmailResponseSuccess, ErrorResponse, Resend } from 'resend';
 import sendVerifyEmailRegisterSuccessfullyTemplate from './templates/send-verify-email-register-successfully.template';
 import verifyEmailRegisterTemplate from './templates/verify-email-register.template';
 import forgotPasswordTemplate from './templates/forgot-password.template';
-import { emailNotVerifiedNoticeTemplate } from './templates/email-not-verified-notice.template';
 
 type SendVerifyEmailRegisterParams = {
   email: string;
@@ -24,8 +23,6 @@ type ForgotPasswordParams = {
   token: string;
   expiresAt: number;
 };
-
-type SendEmailNotVerifiedNoticeParams = { email: string };
 
 @Injectable()
 export class MailService {
@@ -103,19 +100,6 @@ export class MailService {
       to: email,
       subject: 'Forgot password',
       html: forgotPasswordTemplate({ token, expiresAt }),
-    });
-
-    this._trackingLog(data, error);
-  }
-
-  async sendEmailNotVerifiedNotice({
-    email,
-  }: SendEmailNotVerifiedNoticeParams) {
-    const { data, error } = await this._resend.emails.send({
-      from: this._emailForm,
-      to: email,
-      subject: 'Email Not Verified Notice',
-      html: emailNotVerifiedNoticeTemplate(),
     });
 
     this._trackingLog(data, error);

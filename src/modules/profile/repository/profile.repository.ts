@@ -2,7 +2,7 @@ import { BaseRepositoryAbstract } from 'src/core/base/repository/base.abstract.r
 import { Profile } from '../entity/profile.entity';
 import { IProfileRepository } from '../interface/profile-repository.interface';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Document, HydratedDocument, Model, Types } from 'mongoose';
 
 export class ProfileRepository
   extends BaseRepositoryAbstract<Profile>
@@ -22,5 +22,23 @@ export class ProfileRepository
     return await this.profileModel.findOne({
       user_id: userId,
     });
+  }
+
+  async updateByUserId({
+    userId,
+    updateData,
+  }: {
+    userId: Types.ObjectId;
+    updateData: Partial<HydratedDocument<Profile>>;
+  }): Promise<Profile | null> {
+    return await this.profileModel.findOneAndUpdate(
+      {
+        user_id: userId,
+      },
+      { $set: updateData },
+      {
+        new: true,
+      },
+    );
   }
 }

@@ -10,6 +10,7 @@ import expiresInConfig from '@config/expires-in.config';
 import secretKeyConfig from '@config/secret-key.config';
 import redirectToConfig from '@config/redirect-to.config';
 import nodemailerConfig from '@config/nodemailer.config';
+import cloudinaryConfig from '@config/cloudinary.config';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import nodemailerConfig from '@config/nodemailer.config';
         secretKeyConfig,
         redirectToConfig,
         nodemailerConfig,
+        cloudinaryConfig,
       ],
       validate: validateEnv,
     }),

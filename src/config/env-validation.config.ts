@@ -114,6 +114,19 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   CREATE_PROFILE_REDIRECT_TO: string;
+
+  // Cloudinary
+  @IsString()
+  @IsNotEmpty()
+  CLOUDINARY_API_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  CLOUDINARY_SECRET_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  CLOUDINARY_CLOUD_NAME: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

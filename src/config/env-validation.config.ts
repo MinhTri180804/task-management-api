@@ -48,6 +48,22 @@ export class EnvironmentVariables {
   @IsNumber()
   RESEND_VERIFY_EMAIL_REGISTER_SECOND: number;
 
+  // NODEMAILER
+  @IsString()
+  @IsNotEmpty()
+  NODEMAILER_HOST: string;
+
+  @IsNumber()
+  NODEMAILER_PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  NODEMAILER_USERNAME: string;
+
+  @IsString()
+  @IsNotEmpty()
+  NODEMAILER_PASSWORD: string;
+
   // Secret Keys
   @IsString()
   @IsNotEmpty()

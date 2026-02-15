@@ -1,10 +1,7 @@
-import { ResendConfig, ResendConfigName } from '@config/resend.config';
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { CreateEmailResponseSuccess, ErrorResponse, Resend } from 'resend';
-import sendVerifyEmailRegisterSuccessfullyTemplate from './templates/send-verify-email-register-successfully.template';
-import verifyEmailRegisterTemplate from './templates/verify-email-register.template';
-import forgotPasswordTemplate from './templates/forgot-password.template';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { CreateEmailResponseSuccess, ErrorResponse } from 'resend';
+import { type MailerPort } from './mailer.port';
+import * as MailToken from './mail.token';
 
 type SendVerifyEmailRegisterParams = {
   email: string;
@@ -27,16 +24,10 @@ type ForgotPasswordParams = {
 @Injectable()
 export class MailService {
   private readonly _logger = new Logger(MailService.name);
-  private readonly _resend: Resend;
-  private readonly _emailForm: string;
 
-  constructor(private readonly _configService: ConfigService) {
-    const { apiKey, emailFrom } =
-      _configService.getOrThrow<ResendConfig>(ResendConfigName);
-
-    this._resend = new Resend(apiKey);
-    this._emailForm = emailFrom;
-  }
+  constructor(
+    @Inject(MailToken.MAILER_PORT_TOKEN) private readonly _mailer: MailerPort,
+  ) {}
 
   private _trackingLog(
     data: CreateEmailResponseSuccess | null,
@@ -50,14 +41,8 @@ export class MailService {
   }
 
   async sendWelcomeEmail(emailTo: string) {
-    const { data, error } = await this._resend.emails.send({
-      from: this._emailForm,
-      to: emailTo,
-      subject: '🎉 Welcome to Task Manager!',
-      html: '<p>Congrats on sending',
-    });
-
-    this._trackingLog(data, error);
+    await this._mailer.sendWelcome({ emailTo });
+    return;
   }
 
   async sendVerifyEmailRegister({
@@ -65,14 +50,8 @@ export class MailService {
     expiredAt,
     otp,
   }: SendVerifyEmailRegisterParams) {
-    const { data, error } = await this._resend.emails.send({
-      from: this._emailForm,
-      to: email,
-      subject: 'Verify email register',
-      html: verifyEmailRegisterTemplate({ otp, expiredAt }),
-    });
-
-    this._trackingLog(data, error);
+    await this._mailer.sendVerifyEmailRegister({ email, expiredAt, otp });
+    return;
   }
 
   async sendVerifiedEmailRegisterSuccessfully({
@@ -80,28 +59,16 @@ export class MailService {
     setPasswordToken,
     expiresAt,
   }: SendVerifiedEmailRegisterSuccessfully) {
-    const { data, error } = await this._resend.emails.send({
-      from: this._emailForm,
-      to: email,
-      subject: 'Register email successfully',
-      html: sendVerifyEmailRegisterSuccessfullyTemplate({
-        email,
-        setPasswordToken,
-        expiresAt,
-      }),
+    await this._mailer.sendVerifiedEmailRegisterSuccessfully({
+      email,
+      setPasswordToken,
+      expiresAt,
     });
-
-    this._trackingLog(data, error);
+    return;
   }
 
   async sendForgotPassword({ email, token, expiresAt }: ForgotPasswordParams) {
-    const { data, error } = await this._resend.emails.send({
-      from: this._emailForm,
-      to: email,
-      subject: 'Forgot password',
-      html: forgotPasswordTemplate({ token, expiresAt }),
-    });
-
-    this._trackingLog(data, error);
+    await this._mailer.sendForgotPassword({ email, token, expiresAt });
+    return;
   }
 }

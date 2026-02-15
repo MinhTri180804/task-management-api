@@ -22,6 +22,9 @@ export class Profile extends BaseEntity {
   })
   user_id: Types.ObjectId;
 
+  @Prop({ type: String, required: true, unique: true, index: true })
+  nickname: string;
+
   @Prop({ type: String, required: true })
   first_name: string;
 

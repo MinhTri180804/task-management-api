@@ -10,6 +10,7 @@ type InitParams = {
   userId: string;
   firstName: string;
   lastName: string;
+  nickname: string;
   avatar?: string;
 };
 
@@ -31,7 +32,7 @@ export class ProfileService {
     private _profileRepository: IProfileRepository,
   ) {}
 
-  async init({ userId, firstName, lastName, avatar }: InitParams) {
+  async init({ userId, firstName, lastName, avatar, nickname }: InitParams) {
     const profileByUserId = await this._profileRepository.findByUserId({
       userId: new Types.ObjectId(userId),
     });
@@ -40,6 +41,7 @@ export class ProfileService {
 
     const userProfile = await this._profileRepository.create({
       user_id: new Types.ObjectId(userId),
+      nickname: nickname,
       first_name: firstName,
       last_name: lastName,
       avatar_url: avatar,

@@ -38,6 +38,7 @@ export class ProfileController {
   ) {
     const userProfile = await this._profileService.init({
       userId,
+      nickname: data.nickname,
       firstName: data.firstName,
       lastName: data.lastName,
       avatar: data.avatar,

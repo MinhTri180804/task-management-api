@@ -9,6 +9,7 @@ import resendConfig from '@config/resend.config';
 import expiresInConfig from '@config/expires-in.config';
 import secretKeyConfig from '@config/secret-key.config';
 import redirectToConfig from '@config/redirect-to.config';
+import nodemailerConfig from '@config/nodemailer.config';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import redirectToConfig from '@config/redirect-to.config';
         expiresInConfig,
         secretKeyConfig,
         redirectToConfig,
+        nodemailerConfig,
       ],
       validate: validateEnv,
     }),

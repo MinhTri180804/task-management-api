@@ -1,5 +1,6 @@
 import {
   ArgumentsHost,
+  Catch,
   ExceptionFilter,
   HttpException,
   HttpStatus,
@@ -10,6 +11,7 @@ import { NodeEnvEnum } from 'src/core/enum/node-env.enum';
 import { BaseErrorParamExceptionObject } from 'src/core/types/common.type';
 import { ApiResponseError } from 'src/core/types/response.type';
 
+@Catch()
 export class AllExceptionFilter implements ExceptionFilter {
   constructor() {}
 

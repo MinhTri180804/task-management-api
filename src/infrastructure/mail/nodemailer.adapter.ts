@@ -27,6 +27,7 @@ export class NodemailerAdapter implements MailerPort {
       },
     });
   }
+
   async sendWelcome({ emailTo }: { emailTo: string }): Promise<void> {
     await this.transporter.sendMail({
       from: this.emailForm,

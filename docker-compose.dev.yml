@@ -14,6 +14,8 @@ services:
       - todo_management_redis
     volumes:
       - ./:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+
     restart: unless-stopped
 
   todo_management_mongodb:
@@ -43,6 +45,9 @@ services:
       - '8088:8081'
     depends_on:
       - todo_management_redis
+
+volumes:
+  node_modules:
 
 networks:
   default:

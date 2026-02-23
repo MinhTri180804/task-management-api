@@ -7,7 +7,10 @@ import {
 import { ApiResponseError } from '@type/response.type';
 import { Response } from 'express';
 import { MongoServerError } from 'mongodb';
-import { ERROR_CODE } from './error-code.constant';
+import {
+  ERROR_CODE,
+  ErrorCodeValues,
+} from '../../constants/error-code.constant';
 
 @Catch(MongoServerError)
 export class MongoServerExceptionFilter implements ExceptionFilter {
@@ -37,7 +40,7 @@ export class MongoServerExceptionFilter implements ExceptionFilter {
 
     const statusCode = HttpStatus.BAD_REQUEST;
     let message = exception.message;
-    let errorCode = ERROR_CODE.UNKNOWN;
+    let errorCode: ErrorCodeValues = ERROR_CODE.UNKNOWN;
 
     if (exception.code === this._DUPLICATE_KEY_ERROR) {
       const errorContent = this._duplicateKey(exception);

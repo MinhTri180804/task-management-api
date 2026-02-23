@@ -1,7 +1,0 @@
-export const ERROR_CODE = {
-  UNKNOWN: 'UNKNOWN',
-  VALIDATION_FAILED: 'VALIDATION_FAILED',
-  DUPLICATE_KEY: 'DUPLICATE_KEY',
-};
-
-export type ErrorCode = keyof typeof ERROR_CODE;

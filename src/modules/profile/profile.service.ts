@@ -44,7 +44,7 @@ export class ProfileService {
       nickname: nickname,
       first_name: firstName,
       last_name: lastName,
-      avatar_url: avatar,
+      avatar_public_id: avatar,
     });
 
     return userProfile;
@@ -74,7 +74,7 @@ export class ProfileService {
       updateData: {
         first_name: updateData.firstName,
         last_name: updateData.lastName,
-        avatar_url: updateData.avatar,
+        avatar_public_id: updateData.avatar,
       },
     });
 

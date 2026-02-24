@@ -31,8 +31,11 @@ export class Profile extends BaseEntity {
   @Prop({ type: String, required: true })
   last_name: string;
 
-  @Prop({ type: String, required: false, default: AVATAR_DEFAULT_URL })
+  @Prop({ type: String, required: false, default: null })
   avatar_public_id?: string;
+
+  @Prop({ type: String, required: false, default: AVATAR_DEFAULT_URL })
+  avatar_secure_url?: string;
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);

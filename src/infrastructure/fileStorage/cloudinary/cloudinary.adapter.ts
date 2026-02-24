@@ -12,10 +12,13 @@ export class CloudinaryAdapter implements FileStoragePort {
   private readonly _cloudinary: typeof cloudinary;
   constructor(private readonly _configService: ConfigService) {}
 
-  async upload(
-    buffer: Buffer,
-    options: UploadApiOptions,
-  ): Promise<UploadApiResponse> {
+  async upload({
+    buffer,
+    options,
+  }: {
+    buffer: Buffer;
+    options: UploadApiOptions;
+  }): Promise<UploadApiResponse> {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         options,

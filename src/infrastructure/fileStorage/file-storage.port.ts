@@ -1,5 +1,11 @@
 import { UploadApiOptions, UploadApiResponse } from 'cloudinary';
 
 export interface FileStoragePort {
-  upload(buffer: Buffer, options: UploadApiOptions): Promise<UploadApiResponse>;
+  upload({
+    buffer,
+    options,
+  }: {
+    buffer: Buffer;
+    options: UploadApiOptions;
+  }): Promise<UploadApiResponse>;
 }

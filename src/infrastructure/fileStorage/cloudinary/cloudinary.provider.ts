@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { CLOUDINARY } from '../file-storage.token';
+import { CLOUDINARY_ADAPTER_TOKEN } from '../file-storage.token';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
 import {
@@ -8,7 +8,7 @@ import {
 } from '@config/cloudinary.config';
 
 export const CloudinaryProvider: Provider = {
-  provide: CLOUDINARY,
+  provide: CLOUDINARY_ADAPTER_TOKEN,
   inject: [ConfigService],
   useFactory: (configService: ConfigService) => {
     const { apiKey, secretKey, cloudName } =

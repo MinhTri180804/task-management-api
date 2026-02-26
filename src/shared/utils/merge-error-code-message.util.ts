@@ -1,4 +1,4 @@
-import { ErrorCode } from '@shared/constants/error-code.constant';
+import { ErrorCodeValues } from '@shared/constants/error-code.constant';
 
 /**
  * Merge error code and message into a single string.
@@ -13,7 +13,7 @@ export function mergeErrorCodeMessage({
   errorCode,
 }: {
   message: string;
-  errorCode: ErrorCode;
+  errorCode: ErrorCodeValues;
 }): string {
   return `${errorCode} | ${message.trim()}`;
 }

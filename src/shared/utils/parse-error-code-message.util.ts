@@ -1,4 +1,7 @@
-import { ERROR_CODE, ErrorCode } from '@shared/constants/error-code.constant';
+import {
+  ERROR_CODE,
+  ErrorCodeValues,
+} from '@shared/constants/error-code.constant';
 
 /**
  * Parses the error code message from a given string.
@@ -10,7 +13,7 @@ import { ERROR_CODE, ErrorCode } from '@shared/constants/error-code.constant';
  */
 export function parseErrorCodeMessage(message: string): {
   message: string;
-  errorCode: string;
+  errorCode: ErrorCodeValues;
 } {
   const separatorIndex = message.indexOf('|');
 
@@ -23,5 +26,8 @@ export function parseErrorCodeMessage(message: string): {
   const errorCodeValue = message.slice(0, separatorIndex);
   const messageValue = message.slice(separatorIndex + 1);
 
-  return { message: messageValue.trim(), errorCode: errorCodeValue };
+  return {
+    message: messageValue.trim(),
+    errorCode: errorCodeValue as ErrorCodeValues,
+  };
 }

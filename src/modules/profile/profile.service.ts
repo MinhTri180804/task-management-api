@@ -1,11 +1,15 @@
+import { type FileStoragePort } from '@core/fileStorage/file-storage.port';
+import { FILE_STORAGE_TOKEN } from '@core/fileStorage/file-storage.token';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { PROFILE_REPOSITORY_TOKEN } from './profile.token';
-import { type IProfileRepository } from './interface/profile-repository.interface';
 import { UserProfileExistException } from '@shared/exceptions/profile-exist.exception';
-import { Types } from 'mongoose';
 import { UserProfileNotExistException } from '@shared/exceptions/profile-not-exist.exception';
 import { removeUndefined } from '@shared/utils/remove-undefined.util';
+import { Types } from 'mongoose';
+import { type IProfileRepository } from './interface/profile-repository.interface';
+import { PROFILE_REPOSITORY_TOKEN } from './profile.token';
+import { ERROR_CODE } from '@shared/constants/error-code.constant';
 
+// TODO: Update replace avatar to avatar_public_id and avatar_secure_url
 type InitParams = {
   userId: string;
   firstName: string;
@@ -18,6 +22,7 @@ type GetMeParams = {
   userId: string;
 };
 
+// TODO: Remove avatar field in api update profile
 type UpdateParams = {
   userId: string;
   firstName?: string;
@@ -25,11 +30,19 @@ type UpdateParams = {
   avatar?: string;
 };
 
+type UploadAvatarParams = {
+  avatarBuffer: Buffer;
+  userId: Types.ObjectId;
+};
+
 @Injectable()
 export class ProfileService {
   constructor(
     @Inject(PROFILE_REPOSITORY_TOKEN)
     private _profileRepository: IProfileRepository,
+
+    @Inject(FILE_STORAGE_TOKEN)
+    private _fileStorageService: FileStoragePort,
   ) {}
 
   async init({ userId, firstName, lastName, avatar, nickname }: InitParams) {
@@ -54,7 +67,10 @@ export class ProfileService {
     const userProfile = await this._profileRepository.findByUserId({
       userId: new Types.ObjectId(userId),
     });
-    if (!userProfile) throw new UserProfileNotExistException({});
+    if (!userProfile)
+      throw new UserProfileNotExistException({
+        errorCode: ERROR_CODE.PROFILE_NOT_INITIALIZED,
+      });
 
     return userProfile;
   }
@@ -79,5 +95,34 @@ export class ProfileService {
     });
 
     return userProfile;
+  }
+
+  async uploadAvatar({ avatarBuffer: fileBuffer, userId }: UploadAvatarParams) {
+    const { public_id, secure_url } = await this._fileStorageService.upload({
+      buffer: fileBuffer,
+      options: {
+        public_id: `users/avatar/${userId}`,
+        overwrite: true,
+        unique_filename: true,
+        resource_type: 'image',
+        transformation: {
+          width: 300,
+          height: 300,
+          crop: 'fill',
+          quality: 'auto',
+        },
+        format: 'webp',
+      },
+    });
+
+    await this._profileRepository.updateByUserId({
+      userId,
+      updateData: {
+        avatar_public_id: public_id,
+        avatar_secure_url: secure_url,
+      },
+    });
+
+    return { publicId: public_id, secureUrl: secure_url };
   }
 }

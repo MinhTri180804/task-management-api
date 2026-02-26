@@ -5,7 +5,9 @@ import {
   HttpStatus,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CurrentUser } from '@shared/decorators/current-user.decorator';
 import { ResponseSuccessMessage } from '@shared/decorators/response-success-message.decorator';
@@ -14,6 +16,11 @@ import { AccessTokenGuard } from '@shared/guard/access-token.guard';
 import { CreateProfileDTO } from './dto/create-profile.dto';
 import { UpdateUserProfileDTO } from './dto/update-profile.dto';
 import { ProfileService } from './profile.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageAvatarValidationPipe } from './pipe/image-avatar-validation.pipe';
+import { ImageMetadataPipe } from '@shared/pipes/image-metadata.pipe';
+import { type CombineFileShard } from '@shared/types/combine-file-sharp.type';
+import { Types } from 'mongoose';
 
 @Controller('profile')
 export class ProfileController {
@@ -62,5 +69,24 @@ export class ProfileController {
     });
 
     return newUserProfile;
+  }
+
+  @Post('upload-avatar')
+  @UseGuards(AccessTokenGuard)
+  @ResponseSuccessMessage('Upload avatar successfully')
+  @ResponseSuccessStatus(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('avatar'))
+  async uploadAvatar(
+    @UploadedFile(new ImageMetadataPipe(), new ImageAvatarValidationPipe(true))
+    avatar: CombineFileShard,
+
+    @CurrentUser('sub') userId: string,
+  ) {
+    const { publicId, secureUrl } = await this._profileService.uploadAvatar({
+      avatarBuffer: avatar.buffer,
+      userId: new Types.ObjectId(userId),
+    });
+
+    return { publicId, secureUrl };
   }
 }

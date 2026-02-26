@@ -25,6 +25,7 @@ export const ERROR_CODE = {
    */
   VALIDATION_REQUEST: 'VALIDATION_REQUEST',
 
+  // ------ FILE ------
   /**
    * Represents a file error.
    */
@@ -59,6 +60,7 @@ export const ERROR_CODE = {
   IMAGE_ASPECT_RATIO_SIZE_MIN_MAX_INVALID:
     'IMAGE_ASPECT_RATIO_SIZE_MIN_MAX_INVALID',
 
+  // ------ PROFILE ------
   /**
    * Represents a profile not exists error.
    */
@@ -72,10 +74,17 @@ export const ERROR_CODE = {
    */
   PROFILE_EXISTS: 'PROFILE_EXISTS',
 
+  // ------ AUTH ------
   /**
    * Represents a token invalid error.
    */
   TOKEN_INVALID: 'TOKEN_INVALID',
+
+  // ------ BRAND ------
+  /**
+   * Represents a brand not found error.
+   */
+  BRAND_NOT_FOUND: 'BRAND_NOT_FOUND',
 } as const;
 
 /**

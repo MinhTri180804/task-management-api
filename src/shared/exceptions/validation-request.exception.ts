@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { ERROR_CODE } from '@shared/constants/error-code.constant';
 import { type BaseErrorParamExceptionObject } from '@type/common.type';
 
-const DEFAULT_ERROR_CODE = 'VALIDATION_REQUEST';
+const DEFAULT_ERROR_CODE = ERROR_CODE.VALIDATION_REQUEST;
 const DEFAULT_MESSAGE = 'Validation request failed';
 
 type ConstructorParams = BaseErrorParamExceptionObject & {

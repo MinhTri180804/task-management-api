@@ -2,11 +2,11 @@ import { BaseEntity } from 'src/core/base/entity/base.entity';
 import { IBaseRepository } from 'src/core/base/repository/base.interface.repository';
 import { FindAllResponse } from 'src/core/types/common.type';
 import { IBaseService } from './base.interface.service';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
-export class BaseServiceAbstract<T extends BaseEntity>
-  implements IBaseService<T>
-{
+export class BaseServiceAbstract<
+  T extends BaseEntity,
+> implements IBaseService<T> {
   constructor(
     private readonly _repository: IBaseRepository<T, HydratedDocument<T>>,
   ) {}
@@ -33,8 +33,14 @@ export class BaseServiceAbstract<T extends BaseEntity>
     return await this._repository.update(id, item);
   }
 
-  async softRemove(id: string): Promise<boolean> {
-    return await this._repository.softDelete(id);
+  async softRemove({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: Types.ObjectId;
+  }): Promise<boolean> {
+    return await this._repository.softDelete({ id, userId });
   }
 
   async permanentlyRemove(id: string): Promise<boolean> {

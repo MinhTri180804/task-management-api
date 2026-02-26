@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { FindAllResponse } from 'src/core/types/common.type';
 
 export interface IBaseRepository<T, K = T> {
@@ -14,7 +15,13 @@ export interface IBaseRepository<T, K = T> {
 
   update(id: string, dto: Partial<T>): Promise<K | null>;
 
-  softDelete(id: string): Promise<boolean>;
+  softDelete({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: Types.ObjectId;
+  }): Promise<boolean>;
 
   permanentlyDelete(id: string): Promise<boolean>;
 }

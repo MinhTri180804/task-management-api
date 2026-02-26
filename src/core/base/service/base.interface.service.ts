@@ -1,9 +1,16 @@
 import { FindAllResponse } from 'src/core/types/common.type';
+import { Types } from 'mongoose';
 
 export interface IWrite<T> {
   create(item: T): Promise<T>;
   update(id: string, item: Partial<T>): Promise<T | null>;
-  softRemove(id: string): Promise<boolean>;
+  softRemove({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: Types.ObjectId;
+  }): Promise<boolean>;
   permanentlyRemove(id: string): Promise<boolean>;
 }
 

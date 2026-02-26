@@ -1,11 +1,17 @@
 import { BaseEntity } from 'src/core/base/entity/base.entity';
 import { IBaseRepository } from './base.interface.repository';
 import { FindAllResponse } from 'src/core/types/common.type';
-import { FilterQuery, HydratedDocument, Model, QueryOptions } from 'mongoose';
+import {
+  FilterQuery,
+  HydratedDocument,
+  Model,
+  QueryOptions,
+  Types,
+} from 'mongoose';
 
-export abstract class BaseRepositoryAbstract<T extends BaseEntity>
-  implements IBaseRepository<HydratedDocument<T>>
-{
+export abstract class BaseRepositoryAbstract<
+  T extends BaseEntity,
+> implements IBaseRepository<HydratedDocument<T>> {
   protected constructor(private readonly _model: Model<T>) {
     this._model = _model;
   }
@@ -67,7 +73,13 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
     return item;
   }
 
-  async softDelete(id: string): Promise<boolean> {
+  async softDelete({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: Types.ObjectId;
+  }): Promise<boolean> {
     const delete_item = await this._model.findById(id);
 
     if (!delete_item) return false;
@@ -75,6 +87,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
     return !!(await this._model
       .findByIdAndUpdate(id, {
         deleted_at: new Date(),
+        deletedBy: userId,
       })
       .exec());
   }

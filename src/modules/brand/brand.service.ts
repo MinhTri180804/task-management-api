@@ -16,7 +16,7 @@ export class BrandService extends BaseServiceAbstract<Brand> {
     super(_brandRepository);
   }
 
-  async findById({ brandId }: FindByIdParams) {
+  async findOneById({ brandId }: FindByIdParams) {
     const brand = await this._brandRepository.findOneById(brandId);
     if (!brand)
       throw new NotFoundException({

@@ -35,7 +35,7 @@ export class BrandController {
   @ResponseSuccessMessage('Get brand successfully')
   @ResponseSuccessStatus(HttpStatus.OK)
   async findById(@Param('id') brandId: string) {
-    return await this._brandService.findById({ brandId });
+    return await this._brandService.findOneById({ brandId });
   }
 
   @Post('create')

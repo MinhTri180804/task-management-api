@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserSchemaFactory } from './entity/user-schema.factory';
 import { UserModel } from './entity/user.entity';
 import { UserRepository } from './repository/user.repository';
-import { UserSchemaFactory } from './entity/user-schema.factory';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
+import { USER_REPOSITORY } from './user.tokens';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { UserSchemaFactory } from './entity/user-schema.factory';
   providers: [
     UserService,
     {
-      provide: 'IUserRepository',
+      provide: USER_REPOSITORY,
       useClass: UserRepository,
     },
   ],

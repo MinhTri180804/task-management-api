@@ -3,13 +3,14 @@ import { BaseServiceAbstract } from 'src/core/base/service/base.abstract.service
 import { User } from './entity/user.entity';
 import { type IUserRepository } from './interface/user-repository.interface';
 import { HydratedDocument } from 'mongoose';
+import { USER_REPOSITORY } from './user.tokens';
 
 type FindByEmailParams = { email: string };
 
 @Injectable()
 export class UserService extends BaseServiceAbstract<User> {
   constructor(
-    @Inject('IUserRepository')
+    @Inject(USER_REPOSITORY)
     private readonly _userRepository: IUserRepository,
   ) {
     super(_userRepository);

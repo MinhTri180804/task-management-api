@@ -1,4 +1,4 @@
-import { CacheManagerService } from '@core/cache/cache.service';
+import { CacheManagerService } from '@infrastructure/cache/cache.service';
 import { IBaseOtpCache } from './otp-cache.interface';
 import { SCOPE } from '../constant';
 

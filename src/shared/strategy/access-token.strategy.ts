@@ -2,7 +2,7 @@ import {
   SecretKeyConfig,
   SecretKeyConfigName,
 } from '@config/secret-key.config';
-import { JWTAccessTokenPayload } from '@core/jwt/accessToken/types/payload.type';
+import { JWTAccessTokenPayload } from '@infrastructure/jwt/accessToken/types/payload.type';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';

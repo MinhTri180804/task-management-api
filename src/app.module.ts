@@ -1,4 +1,4 @@
-import { FileStorageModule } from '@core/fileStorage/file-storage.module';
+import { FileStorageModule } from '@infrastructure/fileStorage/file-storage.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { BrandModule } from '@modules/brand/brand.module';
 import { ProfileModule } from '@modules/profile/profile.module';

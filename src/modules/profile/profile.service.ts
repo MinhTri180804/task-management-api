@@ -1,5 +1,5 @@
-import { type FileStoragePort } from '@core/fileStorage/file-storage.port';
-import { FILE_STORAGE_TOKEN } from '@core/fileStorage/file-storage.token';
+import { type FileStoragePort } from '@infrastructure/fileStorage/file-storage.port';
+import { FILE_STORAGE_TOKEN } from '@infrastructure/fileStorage/file-storage.token';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UserProfileExistException } from '@shared/exceptions/profile-exist.exception';
 import { UserProfileNotExistException } from '@shared/exceptions/profile-not-exist.exception';

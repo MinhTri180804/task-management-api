@@ -1,10 +1,10 @@
 import { ResendConfig, ResendConfigName } from '@config/resend.config';
-import { ForgotPasswordTokenCacheService } from '@core/cache/forgot-password-token/forgot-password-token.service';
-import { SetPasswordTokenCacheService } from '@core/cache/set-password-token/set-password-token.service';
-import { VerifyEmailRegisterCacheService } from '@core/cache/verify-email-register/verify-email-register.service';
-import { JWTAccessTokenService } from '@core/jwt/accessToken/access-token.service';
-import { JWTForgotPasswordTokenService } from '@core/jwt/forgot-password-token/forgot-password-token.service';
-import { JWTRefreshTokenService } from '@core/jwt/refreshToken/refresh-token.service';
+import { ForgotPasswordTokenCacheService } from '@infrastructure/cache/forgot-password-token/forgot-password-token.service';
+import { SetPasswordTokenCacheService } from '@infrastructure/cache/set-password-token/set-password-token.service';
+import { VerifyEmailRegisterCacheService } from '@infrastructure/cache/verify-email-register/verify-email-register.service';
+import { JWTAccessTokenService } from '@infrastructure/jwt/accessToken/access-token.service';
+import { JWTForgotPasswordTokenService } from '@infrastructure/jwt/forgot-password-token/forgot-password-token.service';
+import { JWTRefreshTokenService } from '@infrastructure/jwt/refreshToken/refresh-token.service';
 import { JwtSetPasswordTokenService } from '@infrastructure/jwt/setPasswordToken/set-password-token.service';
 import { SendMailQueueService } from '@infrastructure/messageQueue/queues/sendMail/send-mail.queue.service';
 import { UserService } from '@modules/user/user.service';
@@ -22,7 +22,7 @@ import {
 } from '@shared/utils/get-remaining-time-from-exp.util';
 import { comparePassword } from '@shared/utils/password.util';
 import { remainingMS } from '@shared/utils/remaining-ms.util';
-import { AuthMethodEnum } from 'src/core/enum/auth-method.enum';
+import { AuthMethodEnum } from '@core/enum/auth-method.enum';
 import {
   ForgotPasswordParams,
   LoginParams,

@@ -1,9 +1,7 @@
-import { CacheManagerService } from '@core/cache/cache.service';
+import { CacheManagerService } from '@infrastructure/cache/cache.service';
 import { IBaseJsonWebTokenCache } from './base-jwt-token-cache.interface';
 
-export abstract class BaseJsonWebTokenCacheAbstract
-  implements IBaseJsonWebTokenCache
-{
+export abstract class BaseJsonWebTokenCacheAbstract implements IBaseJsonWebTokenCache {
   constructor(
     protected readonly _cacheManagerService: CacheManagerService,
     protected readonly prefix: string,

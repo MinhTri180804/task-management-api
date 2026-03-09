@@ -16,7 +16,7 @@ export abstract class BaseRepositoryAbstract<
     this._model = _model;
   }
 
-  async create<K = T>(dto: K): Promise<HydratedDocument<T>> {
+  async create(dto: T): Promise<HydratedDocument<T>> {
     const createData = await this._model.create(dto);
     return createData.save();
   }

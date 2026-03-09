@@ -1,12 +1,18 @@
-import { JWTAccessTokenPayload } from '@core/jwt/accessToken/types/payload.type';
+import { User } from '@modules/user/entity/user.entity';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export const CurrentUser = createParamDecorator(
-  (key: keyof JWTAccessTokenPayload, ctx: ExecutionContext) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const request = ctx.switchToHttp().getRequest();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const user = request.user as JWTAccessTokenPayload;
-    return user[key];
-  },
-);
+type RequestWithUser = Request & {
+  user: Omit<User, 'password'>;
+};
+
+/**
+ * Custom parameter decorator to retrieve the authenticated user
+ * attached to the request object by Passport.
+ *
+ * This decorator is typically used in route handlers protected by
+ * authentication guards (e.g., JWT guard) to access the current user.
+ */
+export const CurrentUser = createParamDecorator((_, ctx: ExecutionContext) => {
+  const request = ctx.switchToHttp().getRequest<RequestWithUser>();
+  return request.user;
+});

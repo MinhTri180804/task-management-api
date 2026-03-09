@@ -13,7 +13,7 @@ import { BrandService } from './brand.service';
 import { AccessTokenGuard } from '@shared/guard/access-token.guard';
 import { ResponseSuccessMessage } from '@shared/decorators/response-success-message.decorator';
 import { ResponseSuccessStatus } from '@shared/decorators/response-success-status.decorator';
-import { CurrentUser } from '@shared/decorators/current-user.decorator';
+import { CurrentAccessTokenPayload } from '@shared/decorators/current-access-token-payload.decorator';
 import { CreateDTO } from './dto/create.dto';
 import { UpdateDTO } from './dto/update.dto';
 import { Types } from 'mongoose';
@@ -42,7 +42,10 @@ export class BrandController {
   @UseGuards(AccessTokenGuard)
   @ResponseSuccessMessage('Create brand successfully')
   @ResponseSuccessStatus(HttpStatus.CREATED)
-  async create(@CurrentUser('sub') userId: string, @Body() data: CreateDTO) {
+  async create(
+    @CurrentAccessTokenPayload('sub') userId: string,
+    @Body() data: CreateDTO,
+  ) {
     const { name, description } = data;
     return await this._brandService.create({
       name,
@@ -55,7 +58,10 @@ export class BrandController {
   @UseGuards(AccessTokenGuard)
   @ResponseSuccessMessage('Delete brand successfully')
   @ResponseSuccessStatus(HttpStatus.OK)
-  async delete(@CurrentUser('sub') userId: string, @Param('id') id: string) {
+  async delete(
+    @CurrentAccessTokenPayload('sub') userId: string,
+    @Param('id') id: string,
+  ) {
     return await this._brandService.softRemove({
       id,
       userId: new Types.ObjectId(userId),

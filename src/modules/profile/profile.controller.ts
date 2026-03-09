@@ -9,7 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CurrentUser } from '@shared/decorators/current-user.decorator';
+import { CurrentAccessTokenPayload } from '@shared/decorators/current-access-token-payload.decorator';
 import { ResponseSuccessMessage } from '@shared/decorators/response-success-message.decorator';
 import { ResponseSuccessStatus } from '@shared/decorators/response-success-status.decorator';
 import { AccessTokenGuard } from '@shared/guard/access-token.guard';
@@ -30,7 +30,7 @@ export class ProfileController {
   @UseGuards(AccessTokenGuard)
   @ResponseSuccessStatus(HttpStatus.OK)
   @ResponseSuccessMessage('Get me profile successfully')
-  async getMe(@CurrentUser('sub') userId: string) {
+  async getMe(@CurrentAccessTokenPayload('sub') userId: string) {
     const userProfile = await this._profileService.getMe({ userId });
     return userProfile;
   }
@@ -40,7 +40,7 @@ export class ProfileController {
   @ResponseSuccessMessage('Init profile successfully')
   @ResponseSuccessStatus(HttpStatus.CREATED)
   async init(
-    @CurrentUser('sub') userId: string,
+    @CurrentAccessTokenPayload('sub') userId: string,
     @Body() data: CreateProfileDTO,
   ) {
     const userProfile = await this._profileService.init({
@@ -58,7 +58,7 @@ export class ProfileController {
   @ResponseSuccessMessage('Update profile successfully')
   @ResponseSuccessStatus(HttpStatus.OK)
   async update(
-    @CurrentUser('sub') userId: string,
+    @CurrentAccessTokenPayload('sub') userId: string,
     @Body() data: UpdateUserProfileDTO,
   ) {
     const newUserProfile = await this._profileService.update({
@@ -80,7 +80,7 @@ export class ProfileController {
     @UploadedFile(new ImageMetadataPipe(), new ImageAvatarValidationPipe(true))
     avatar: CombineFileShard,
 
-    @CurrentUser('sub') userId: string,
+    @CurrentAccessTokenPayload('sub') userId: string,
   ) {
     const { publicId, secureUrl } = await this._profileService.uploadAvatar({
       avatarBuffer: avatar.buffer,

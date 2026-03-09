@@ -22,6 +22,10 @@ export class BaseServiceAbstract<
     return await this._repository.findOneById(id);
   }
 
+  async findById(id: string): Promise<HydratedDocument<T> | null> {
+    return await this._repository.findOneById(id);
+  }
+
   async create(item: T): Promise<HydratedDocument<T>> {
     return await this._repository.create(item);
   }

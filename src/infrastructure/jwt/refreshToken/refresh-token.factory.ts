@@ -24,7 +24,7 @@ export class JWTRefreshTokenFactory implements JwtOptionsFactory {
 
     return {
       secret: refreshToken,
-      signOptions: { expiresIn: expiresInRefreshToken as JwtExpiresIn },
+      signOptions: { expiresIn: `${expiresInRefreshToken}d` as JwtExpiresIn },
     };
   }
 }

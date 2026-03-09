@@ -90,9 +90,9 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   JWT_ACCESS_EXPIRES_IN: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  JWT_REFRESH_EXPIRES_IN: string;
+  JWT_REFRESH_EXPIRES_IN: number;
 
   @IsString()
   @IsNotEmpty()
